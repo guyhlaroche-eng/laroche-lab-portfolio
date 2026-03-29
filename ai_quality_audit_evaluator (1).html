@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Quality Audit Evaluator — Laroche Lab</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f7f7f5;
+    --color-bg-success: #eaf3de;
+    --color-bg-warning: #faeeda;
+    --color-bg-danger: #fcebeb;
+    --color-bg-info: #e6f1fb;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #555555;
+    --color-text-success: #3b6d11;
+    --color-text-warning: #854f0b;
+    --color-text-danger: #a32d2d;
+    --color-text-info: #185fa5;
+    --color-border: rgba(0,0,0,0.1);
+    --color-border-hover: rgba(0,0,0,0.2);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg: #1a1a1a;
+      --color-bg-secondary: #242424;
+      --color-bg-success: #173404;
+      --color-bg-warning: #412402;
+      --color-bg-danger: #501313;
+      --color-bg-info: #042c53;
+      --color-text-primary: #f0efe9;
+      --color-text-secondary: #9a9a8e;
+      --color-text-success: #c0dd97;
+      --color-text-warning: #fac775;
+      --color-text-danger: #f7c1c1;
+      --color-text-info: #b5d4f4;
+      --color-border: rgba(255,255,255,0.1);
+      --color-border-hover: rgba(255,255,255,0.2);
+    }
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .header { margin-bottom: 1.5rem; }
+  .header h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .header p { font-size: 13px; color: var(--color-text-secondary); }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .metric { background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 14px; }
+  .metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .metric-value { font-size: 24px; font-weight: 500; color: var(--color-text-primary); }
+  .metric-value.pass { color: var(--color-text-success); }
+  .metric-value.warn { color: var(--color-text-warning); }
+  .metric-value.fail { color: var(--color-text-danger); }
+
+  .case-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .case-card { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .case-header { display: flex; align-items: center; gap: 12px; padding: 13px 16px; cursor: pointer; user-select: none; transition: background 0.15s; }
+  .case-header:hover { background: var(--color-bg-secondary); }
+
+  .case-num { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); min-width: 28px; }
+  .case-title { flex: 1; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+
+  .score-badge { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; min-width: 44px; text-align: center; }
+  .flag-badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+
+  .score-hi { background: var(--color-bg-success); color: var(--color-text-success); }
+  .score-mid { background: var(--color-bg-warning); color: var(--color-text-warning); }
+  .score-lo { background: var(--color-bg-danger); color: var(--color-text-danger); }
+
+  .flag-pass { background: var(--color-bg-success); color: var(--color-text-success); }
+  .flag-note { background: var(--color-bg-info); color: var(--color-text-info); }
+  .flag-review { background: var(--color-bg-warning); color: var(--color-text-warning); }
+  .flag-fail { background: var(--color-bg-danger); color: var(--color-text-danger); }
+
+  .chevron { font-size: 11px; color: var(--color-text-secondary); transition: transform 0.2s; display: inline-block; }
+  .chevron.open { transform: rotate(90deg); }
+
+  .case-body { padding: 0 16px 16px; border-top: 0.5px solid var(--color-border); display: none; }
+  .case-body.open { display: block; }
+
+  .query-box { background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; margin: 12px 0; font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; font-style: italic; }
+  .query-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.05em; margin-bottom: 6px; font-style: normal; text-transform: uppercase; }
+
+  .dim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .dim-item { background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; }
+  .dim-name { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .dim-score-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .dim-score { font-size: 15px; font-weight: 500; }
+  .dim-bar { flex: 1; height: 4px; background: var(--color-border); border-radius: 2px; }
+  .dim-fill { height: 100%; border-radius: 2px; }
+  .fill-hi { background: var(--color-text-success); opacity: 0.7; }
+  .fill-mid { background: var(--color-text-warning); opacity: 0.7; }
+  .fill-lo { background: var(--color-text-danger); opacity: 0.7; }
+  .dim-note { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
+
+  .overall-row { display: flex; align-items: center; gap: 12px; padding: 10px 0 0; border-top: 0.5px solid var(--color-border); margin-top: 4px; }
+  .overall-label { font-size: 13px; color: var(--color-text-secondary); }
+  .overall-score { font-size: 20px; font-weight: 500; }
+
+  .finding-box { border-left: 2px solid var(--color-text-warning); padding: 8px 12px; margin-top: 10px; background: var(--color-bg-secondary); border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+  .finding-label { font-size: 11px; font-weight: 500; color: var(--color-text-warning); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .finding-text { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  .patterns-section { margin-top: 1.5rem; border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .patterns-header { padding: 12px 16px; background: var(--color-bg-secondary); font-size: 14px; font-weight: 500; color: var(--color-text-primary); border-bottom: 0.5px solid var(--color-border); }
+  .pattern-item { padding: 14px 16px; border-top: 0.5px solid var(--color-border); }
+  .pattern-item:first-child { border-top: none; }
+  .pattern-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .pattern-detail { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
+  .pattern-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-bottom: 6px; background: var(--color-bg-danger); color: var(--color-text-danger); }
+
+  .footer { margin-top: 2rem; padding-top: 1rem; border-top: 0.5px solid var(--color-border); font-size: 12px; color: var(--color-text-secondary); display: flex; justify-content: space-between; }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .dim-grid { grid-template-columns: 1fr; }
+    .case-title { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AI Quality Audit Evaluator</h1>
+  <p>Laroche Lab — 10 scored test cases across 4 dimensions</p>
+</div>
+
+<div class="summary-grid" id="summaryGrid">
+  <div class="metric"><div class="metric-label">Avg overall score</div><div class="metric-value" id="avgScore">—</div></div>
+  <div class="metric"><div class="metric-label">Pass / Pass with note</div><div class="metric-value pass" id="passCount">—</div></div>
+  <div class="metric"><div class="metric-label">Review required</div><div class="metric-value warn" id="reviewCount">—</div></div>
+  <div class="metric"><div class="metric-label">Fail / Critical fail</div><div class="metric-value fail" id="failCount">—</div></div>
+</div>
+
+<div class="case-list" id="caseList"></div>
+
+<div class="patterns-section">
+  <div class="patterns-header">3 systemic findings</div>
+  <div class="pattern-item">
+    <div class="pattern-tag">7 of 10 cases</div>
+    <div class="pattern-name">The confident fabricator pattern</div>
+    <div class="pattern-detail">The AI invents specific details — dates, amounts, reference numbers, feature names — when it lacks real system data. It never says "I don't know." It generates plausible-sounding specifics instead.</div>
+  </div>
+  <div class="pattern-item">
+    <div class="pattern-tag">3 of 10 cases</div>
+    <div class="pattern-name">Template mismatch on emotional queries</div>
+    <div class="pattern-detail">The AI applies cheerful, positive templates regardless of customer emotional state. When a customer is angry, worried, or threatening legal action, the default tone becomes a liability.</div>
+  </div>
+  <div class="pattern-item">
+    <div class="pattern-tag">2 of 10 cases</div>
+    <div class="pattern-name">Action hallucination</div>
+    <div class="pattern-detail">The AI claims to perform system actions it cannot execute — account refresh, email resend, refund processing — creating false expectations and destroying trust on follow-up.</div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>Laroche Lab — AI Operations · larochelab.ai</span>
+  <span>Guy-Henry Laroche · Former Amazon AI Operations Lead</span>
+</div>
+
+<script>
+const cases = [
+  {
+    num: "01", title: "Straightforward refund request",
+    query: "Hi, I ordered a jacket 3 weeks ago and it still hasn't arrived. Order #44821. I'd like a refund please.",
+    scores: { accuracy: 4, tone: 5, compliance: 4, hallucination: 3 },
+    notes: { accuracy: "Specific date plausible but stated with high confidence without verification.", tone: "Empathetic, professional, not over-apologetic. Well-calibrated.", compliance: "Correct to trace before refund. Minor gap: no identity verification.", hallucination: "March 4th dispatch date may be fabricated. Moderate risk if invented." },
+    finding: "Good response overall. Flag the confident date claim — if the AI invented it, this is a moderate hallucination. Add a human review step for any response containing specific dates not present in the original query."
+  },
+  {
+    num: "02", title: "Password reset, simple",
+    query: "I can't log into my account. I've tried resetting my password but I'm not getting the reset email.",
+    scores: { accuracy: 5, tone: 4, compliance: 5, hallucination: 5 },
+    notes: { accuracy: "All three troubleshooting steps are standard and correct.", tone: "Friendly and helpful. 'Hope this helps!' slightly too casual but not harmful.", compliance: "Correctly does not ask for password. Manual escalation path is appropriate.", hallucination: "No invented claims. All statements grounded and verifiable." },
+    finding: "Strong benchmark response for simple technical queries. Minor tone note for logging. Use as internal calibration reference."
+  },
+  {
+    num: "03", title: "Angry customer, billing dispute",
+    query: "You charged me TWICE this month. This is absolutely unacceptable. I want my money back NOW.",
+    scores: { accuracy: 3, tone: 1, compliance: 2, hallucination: 5 },
+    notes: { accuracy: "No incorrect info but dangerously vague — does not acknowledge the specific complaint.", tone: "'Thanks for your patience!' and 'Have a great day!' severely mismatched to an angry customer.", compliance: "Does not follow dispute escalation protocol. Missing urgency and defined resolution path.", hallucination: "No invented information in this response." },
+    finding: "Tone failure is the critical issue. AI applied a default cheerful template to a high-frustration complaint. Recommend a sentiment detection gate: if customer tone is angry or urgent, route to a different template or human review."
+  },
+  {
+    num: "04", title: "Subscription cancellation + refund",
+    query: "I want to cancel my subscription. I've been charged for two months I didn't use and I want those refunded.",
+    scores: { accuracy: 2, tone: 4, compliance: 1, hallucination: 1 },
+    notes: { accuracy: "Refund amount ($29.99) was not provided anywhere in the query — this figure was invented.", tone: "Appropriate, clear, not over-apologetic. Tone is actually fine.", compliance: "Processing a refund without authorization or identity verification is a direct policy violation.", hallucination: "Invented a specific dollar amount and presented it as a confirmed transaction. Critical hallucination." },
+    finding: "Critical failure on two dimensions. The AI invented a refund amount and processed an unauthorized transaction — both create legal liability. Add a policy constraint explicitly prohibiting the AI from confirming or processing refunds."
+  },
+  {
+    num: "05", title: "Product question, technical integration",
+    query: "Does your project management tool integrate with Slack and Google Calendar? I need both before I can switch.",
+    scores: { accuracy: 2, tone: 5, compliance: 4, hallucination: 1 },
+    notes: { accuracy: "Specific features described (/task command, auto calendar sync) may not exist in the product.", tone: "Helpful, confident, appropriately enthusiastic for a sales-adjacent query.", compliance: "Appropriate to answer integration questions. Should confirm against documentation.", hallucination: "Described specific product features with high confidence at a purchase-decision moment. If invented, damages trust irreparably." },
+    finding: "High-confidence hallucination at a critical sales moment. AI invented feature details to give a complete-sounding answer. All product feature questions must be grounded with a documentation knowledge base — never answered from general training data."
+  },
+  {
+    num: "06", title: "Simple shipping update",
+    query: "Where is my order? I ordered 5 days ago.",
+    scores: { accuracy: 5, tone: 5, compliance: 5, hallucination: 5 },
+    notes: { accuracy: "Correct — cannot look up without identifier. No invented information.", tone: "Friendly, direct, efficient. Perfect length.", compliance: "Correct first step — verify identity before sharing order details.", hallucination: "No speculative or invented content whatsoever." },
+    finding: "Clean benchmark. Short, correct, compliant. The best AI responses are often the shortest. Use as reference example for simple order queries in internal calibration."
+  },
+  {
+    num: "07", title: "Sensitive complaint, privacy issue",
+    query: "I think my account was accessed by someone else. I saw a login from a country I've never been to. I'm really worried.",
+    scores: { accuracy: 3, tone: 1, compliance: 1, hallucination: 3 },
+    notes: { accuracy: "VPN explanation plausible but presented as the likely cause without any evidence.", tone: "'No worries!' and 'It's probably nothing' are catastrophically wrong for a potential security breach.", compliance: "Suspected unauthorized access must trigger security protocol: password reset, session termination, incident logging.", hallucination: "Speculates VPN or new device is the cause with no basis — presents speculation as reassurance." },
+    finding: "Dangerous failure pattern. AI minimized a security concern to avoid escalation. Any response to suspected account compromise must be hardcoded to trigger: password reset, session termination, and security team escalation. Never reassure on a potential breach."
+  },
+  {
+    num: "08", title: "Feature request / feedback",
+    query: "It would be great if you could add a dark mode to the app. Just a suggestion!",
+    scores: { accuracy: 2, tone: 5, compliance: 2, hallucination: 2 },
+    notes: { accuracy: "'On our roadmap for Q3' is a specific commitment almost certainly not provided in any system context.", tone: "Warm, appreciative, appropriate for a positive feedback interaction.", compliance: "Making roadmap commitments is a policy violation in most support contexts. Agents cannot promise features or timelines.", hallucination: "Invented a specific roadmap timeline (Q3). If dark mode is not released in Q3, this response created a broken promise." },
+    finding: "AI invented a roadmap commitment to be helpful — optimized for making the customer happy now at the cost of a false promise. Add explicit constraint to system prompt: 'Never make commitments about product timelines, features, or release dates.'"
+  },
+  {
+    num: "09", title: "Escalation required, legal threat",
+    query: "I'm going to take legal action if this isn't resolved today. I've been waiting 6 weeks for a replacement and nobody has helped me.",
+    scores: { accuracy: 3, tone: 5, compliance: 4, hallucination: 2 },
+    notes: { accuracy: "'Within 24 hours' is a commitment that may not be deliverable. ESC-2024-7731 appears to be an invented case reference.", tone: "Appropriate for a high-frustration, legal-threat situation. Acknowledges the wait directly, does not deflect.", compliance: "Correct to escalate. Minor gap: legal threats typically require routing to a specific legal/compliance team.", hallucination: "Invented a specific case reference number (ESC-2024-7731) presented as a real tracking number." },
+    finding: "Good instinct — escalate, acknowledge, apologize. But the invented case reference is critical. If a customer calls back with ESC-2024-7731 and it doesn't exist, trust collapses entirely. Rule: AI must never generate reference numbers, ticket IDs, or case numbers."
+  },
+  {
+    num: "10", title: "Complex, multi-issue query",
+    query: "I have three issues: (1) charged twice in January, (2) wrong plan showing, and (3) never received my onboarding email.",
+    scores: { accuracy: 2, tone: 5, compliance: 2, hallucination: 1 },
+    notes: { accuracy: "Specific transaction dates (Jan 8th and 15th) were not provided anywhere — appear fabricated.", tone: "Structured, clear, professional. Excellent handling of a complex multi-part query format.", compliance: "Claims to have performed system actions (account refresh, email resend) it cannot actually perform.", hallucination: "Three separate hallucinations: invented transaction dates, claimed a technical action, claimed to resend an email. Compound failure." },
+    finding: "Most instructive case: the form is exactly right, the content is deeply wrong. Rule: AI must never claim to perform system actions unless genuinely connected to those systems via verified live integrations."
+  }
+];
+
+function scoreClass(s) {
+  if (s >= 4) return "score-hi";
+  if (s === 3) return "score-mid";
+  return "score-lo";
+}
+
+function fillClass(s) {
+  if (s >= 4) return "fill-hi";
+  if (s === 3) return "fill-mid";
+  return "fill-lo";
+}
+
+function flagFromScore(s) {
+  if (s >= 4.5) return { label: "Pass", cls: "flag-pass" };
+  if (s >= 3.5) return { label: "Pass with note", cls: "flag-note" };
+  if (s >= 2.5) return { label: "Review", cls: "flag-review" };
+  return { label: "Fail", cls: "flag-fail" };
+}
+
+function overall(scores) {
+  return (scores.accuracy + scores.tone + scores.compliance + scores.hallucination) / 4;
+}
+
+function renderCases() {
+  const list = document.getElementById("caseList");
+  const dimNames = { accuracy: "Accuracy", tone: "Tone", compliance: "Policy compliance", hallucination: "Hallucination risk" };
+  let passN = 0, reviewN = 0, failN = 0, totalScore = 0;
+
+  cases.forEach((c, i) => {
+    const ov = overall(c.scores);
+    totalScore += ov;
+    const ovStr = ov.toFixed(1);
+    const flag = flagFromScore(ov);
+
+    if (flag.cls === "flag-pass" || flag.cls === "flag-note") passN++;
+    else if (flag.cls === "flag-review") reviewN++;
+    else failN++;
+
+    const card = document.createElement("div");
+    card.className = "case-card";
+    card.innerHTML = `
+      <div class="case-header" onclick="toggle(${i})">
+        <span class="case-num">${c.num}</span>
+        <span class="case-title">${c.title}</span>
+        <span class="score-badge ${scoreClass(ov)}">${ovStr}</span>
+        <span class="flag-badge ${flag.cls}">${flag.label}</span>
+        <span class="chevron" id="chev${i}">▶</span>
+      </div>
+      <div class="case-body" id="body${i}">
+        <div class="query-box"><div class="query-label">Customer query</div>${c.query}</div>
+        <div class="dim-grid">
+          ${Object.entries(c.scores).map(([k, v]) => `
+            <div class="dim-item">
+              <div class="dim-name">${dimNames[k]}</div>
+              <div class="dim-score-row">
+                <span class="dim-score ${scoreClass(v)}">${v}/5</span>
+                <div class="dim-bar"><div class="dim-fill ${fillClass(v)}" style="width:${v * 20}%"></div></div>
+              </div>
+              <div class="dim-note">${c.notes[k]}</div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="overall-row">
+          <span class="overall-label">Overall score</span>
+          <span class="overall-score ${scoreClass(ov)}">${ovStr} / 5</span>
+          <span class="flag-badge ${flag.cls}" style="margin-left:8px;">${flag.label}</span>
+        </div>
+        <div class="finding-box">
+          <div class="finding-label">Key finding</div>
+          <div class="finding-text">${c.finding}</div>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  document.getElementById("avgScore").textContent = (totalScore / cases.length).toFixed(1);
+  document.getElementById("passCount").textContent = passN;
+  document.getElementById("reviewCount").textContent = reviewN;
+  document.getElementById("failCount").textContent = failN;
+}
+
+function toggle(i) {
+  const body = document.getElementById("body" + i);
+  const chev = document.getElementById("chev" + i);
+  const isOpen = body.classList.contains("open");
+  body.classList.toggle("open", !isOpen);
+  chev.classList.toggle("open", !isOpen);
+}
+
+renderCases();
+</script>
+</body>
+</html>
