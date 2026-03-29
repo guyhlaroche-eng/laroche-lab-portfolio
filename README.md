@@ -38,7 +38,7 @@ Scores outputs across 4 dimensions — Accuracy, Tone, Policy Compliance, and Ha
 
 ---
 
-### 2. AI Operations Maturity Assessment *(Coming Soon)*
+### 2. AI Operations Maturity Assessment *(https://playful-variraptor-7a2.notion.site/Laroche_Lab_Notion_Scorecard-3333bab7afb1803b8a21f8355c0f157b?source=copy_link)*
 A 6-dimension scoring framework that evaluates an organization's AI operational readiness across workflow documentation, prompt governance, human oversight, output monitoring, data quality, and compliance readiness.
 
 Produces a maturity level (Foundation / Developing / Scaling / Advanced) and a prioritized recommendation summary.
