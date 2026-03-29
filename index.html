@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laroche Lab — AI Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --white: #f5f4f0;
+    --cream: #ede9e0;
+    --red: #c8281a;
+    --grey: #3a3a3a;
+    --mid: #9a9a8e;
+    --border: rgba(245,244,240,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--red);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: normal;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(245,244,240,0.4);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s cubic-bezier(0.23,1,0.32,1);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 60px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  .logo-mark {
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .logo-frame {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--white);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .logo-frame::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; right: -4px;
+    width: 14px; height: 14px;
+    background: var(--red);
+  }
+  .logo-frame span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+  }
+
+  .logo-text {
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .logo-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.25em;
+    color: var(--white);
+  }
+  .logo-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--mid);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex; gap: 40px; align-items: center;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    border: 1px solid var(--white);
+    padding: 10px 22px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-cta:hover { background: var(--white); color: var(--black); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(120px, 18vw, 260px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(245,244,240,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 8.5vw, 130px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.38em;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .hero-bottom {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-top: 60px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.7s forwards;
+  }
+
+  .hero-desc {
+    max-width: 380px;
+    color: var(--mid);
+    font-size: 15px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; align-items: center;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    padding: 16px 36px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: #a31f14; transform: translateY(-2px); }
+
+  .btn-ghost {
+    border: 1px solid var(--border);
+    color: var(--mid);
+    padding: 16px 36px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--white); color: var(--white); }
+
+  .hero-scroll {
+    position: absolute;
+    right: 60px; top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--mid);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+  .hero-scroll::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--mid);
+  }
+
+  /* DIVIDER LINE */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 60px;
+  }
+
+  /* STATS STRIP */
+  .stats-strip {
+    display: flex;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .stat-item {
+    flex: 1;
+    padding: 40px 60px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px;
+    transition: background 0.3s;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: rgba(245,244,240,0.02); }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 0.03em;
+    color: var(--white);
+  }
+  .stat-num span { color: var(--red); }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  /* SECTION DEFAULTS */
+  section { padding: 120px 60px; }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--red);
+  }
+
+  /* PROBLEM */
+  .problem {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .problem-left h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin-bottom: 28px;
+  }
+
+  .problem-left p {
+    color: var(--mid);
+    font-size: 16px;
+    line-height: 1.75;
+    max-width: 420px;
+  }
+
+  .problem-right {
+    display: flex; flex-direction: column; gap: 0;
+  }
+
+  .problem-item {
+    display: flex; align-items: flex-start; gap: 20px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    transition: padding-left 0.3s ease;
+  }
+  .problem-item:first-child { border-top: 1px solid var(--border); }
+  .problem-item:hover { padding-left: 12px; }
+
+  .problem-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 0.1em;
+    padding-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .problem-text strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .problem-text span {
+    font-size: 13px;
+    color: var(--mid);
+  }
+
+  /* OFFER */
+  .offer-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 60px;
+  }
+
+  .offer-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+  }
+
+  .offer-header p {
+    max-width: 320px;
+    color: var(--mid);
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: right;
+  }
+
+  .deliverables-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border: 1px solid var(--border);
+  }
+
+  .deliverable-card {
+    padding: 36px 28px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 16px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .deliverable-card:last-child { border-right: none; }
+  .deliverable-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .deliverable-card:hover { background: rgba(245,244,240,0.02); }
+  .deliverable-card:hover::before { transform: scaleX(1); }
+
+  .deliverable-icon {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
+  .deliverable-title {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .deliverable-desc {
+    font-size: 12px;
+    color: var(--mid);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  /* PROCESS */
+  .process { background: rgba(245,244,240,0.02); }
+
+  .process h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 72px);
+    letter-spacing: 0.02em;
+    margin-bottom: 60px;
+  }
+
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+
+  .phase {
+    padding: 48px 36px;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+  .phase:last-child { border-right: none; }
+
+  .phase-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(245,244,240,0.05);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .phase-week {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .phase-name {
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  .phase-items {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .phase-items li {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--mid);
+    letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .phase-items li::before {
+    content: '—';
+    color: var(--red);
+    flex-shrink: 0;
+  }
+
+  /* WHY */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    margin-top: 60px;
+  }
+
+  .why-left {
+    padding: 60px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 40px;
+  }
+
+  .why-right {
+    padding: 60px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+
+  .why-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 4vw, 58px);
+    letter-spacing: 0.02em;
+    line-height: 0.95;
+  }
+
+  .cred-item {
+    display: flex; gap: 20px; align-items: flex-start;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .cred-dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .cred-item strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .cred-item p {
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+
+  .profile-card {
+    border: 1px solid var(--border);
+    padding: 36px;
+    position: relative;
+  }
+  .profile-card::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 20px; height: 20px;
+    background: var(--red);
+  }
+
+  .profile-initial {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: rgba(245,244,240,0.07);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .profile-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .profile-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .profile-bio {
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.7;
+  }
+
+  .tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 20px;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+  }
+
+  /* PRICING */
+  .pricing-wrap {
+    border: 1px solid var(--border);
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 60px;
+    align-items: center;
+    margin-top: 60px;
+  }
+
+  .pricing-wrap h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 72px);
+    letter-spacing: 0.02em;
+    line-height: 0.95;
+    margin-bottom: 20px;
+  }
+
+  .pricing-wrap p {
+    color: var(--mid);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  .price-block {
+    text-align: center;
+    border: 1px solid var(--border);
+    padding: 40px 60px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .price-block::before {
+    content: 'AI Operations Audit';
+    position: absolute;
+    top: -1px; left: 50%; transform: translateX(-50%);
+    background: var(--red);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    white-space: nowrap;
+  }
+
+  .price-from {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--mid);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    margin-top: 10px;
+  }
+
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .price-unit {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--mid);
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 120px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(200,40,26,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(50px, 7vw, 100px);
+    letter-spacing: 0.02em;
+    line-height: 0.92;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .cta-section p {
+    color: var(--mid);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+  }
+
+  .cta-actions {
+    display: flex; gap: 16px; justify-content: center;
+    position: relative;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    text-transform: uppercase;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    text-transform: uppercase;
+    display: flex; gap: 32px;
+  }
+  .footer-right a { color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  .footer-right a:hover { color: var(--white); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    .hero { padding: 0 24px 60px; }
+    .problem { grid-template-columns: 1fr; gap: 48px; }
+    .deliverables-grid { grid-template-columns: repeat(2, 1fr); }
+    .phases { grid-template-columns: 1fr 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+    .pricing-wrap { grid-template-columns: 1fr; }
+    .stats-strip { flex-wrap: wrap; }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero-scroll { display: none; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+    .footer-right { flex-wrap: wrap; justify-content: center; }
+    .offer-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .offer-header p { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo-mark">
+    <div class="logo-frame"><span>LR</span></div>
+    <div class="logo-text">
+      <div class="logo-name">Laroche Lab</div>
+      <div class="logo-sub">AI Operations</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#offer">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Book Audit</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-text">LAROCHE</div>
+
+  <div class="hero-tag">AI Operations Consulting</div>
+  <h1>
+    <em>Reliable AI starts with</em>
+    Operational<br>Discipline
+  </h1>
+
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      Most AI projects fail not because of the model — but because of poor workflows, undocumented processes, and absent governance. We fix the foundation first.
+    </p>
+    <div class="hero-actions">
+      <a href="#offer" class="btn-primary">View the Audit →</a>
+      <a href="#contact" class="btn-ghost">Book a Call</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip reveal">
+  <div class="stat-item">
+    <div class="stat-num">3<span>–4</span></div>
+    <div class="stat-label">Weeks per engagement</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">5</div>
+    <div class="stat-label">Structured deliverables</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">€<span>8K</span></div>
+    <div class="stat-label">Audit starting price</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">1</div>
+    <div class="stat-label">Proven methodology</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-tag">The Problem</div>
+  <div class="problem">
+    <div class="problem-left reveal">
+      <h2>AI Without Structure Is Just Noise</h2>
+      <p>Companies rush to deploy AI tools without fixing the operational layer underneath. The result is inconsistent outputs, broken trust, and costly failures.</p>
+    </div>
+    <div class="problem-right reveal">
+      <div class="problem-item">
+        <div class="problem-num">01</div>
+        <div class="problem-text">
+          <strong>Undocumented Workflows</strong>
+          <span>AI agents operate on top of processes no one has mapped or validated.</span>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">02</div>
+        <div class="problem-text">
+          <strong>No Prompt Governance</strong>
+          <span>Prompts change constantly with no version control, ownership, or evaluation.</span>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">03</div>
+        <div class="problem-text">
+          <strong>Absent Human Oversight</strong>
+          <span>No defined review loops, escalation paths, or quality control systems.</span>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">04</div>
+        <div class="problem-text">
+          <strong>Zero Monitoring</strong>
+          <span>AI outputs go unchecked. Failures accumulate silently until they become visible.</span>
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-num">05</div>
+        <div class="problem-text">
+          <strong>Compliance Blind Spots</strong>
+          <span>EU AI Act obligations are ignored until they become liabilities.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- OFFER -->
+<section id="offer">
+  <div class="section-tag">The Solution</div>
+  <div class="offer-header reveal">
+    <h2>AI Operations<br>Audit</h2>
+    <p>A structured 3–4 week engagement that evaluates every layer of how your company designs, runs, and governs AI systems — then delivers a concrete improvement roadmap.</p>
+  </div>
+
+  <div class="deliverables-grid reveal">
+    <div class="deliverable-card">
+      <div class="deliverable-icon">01 / Workflow</div>
+      <div class="deliverable-title">AI Workflow Architecture Map</div>
+      <div class="deliverable-desc">End-to-end documentation of how AI flows through your organization — prompts, agents, retrieval, validation, and human touchpoints.</div>
+    </div>
+    <div class="deliverable-card">
+      <div class="deliverable-icon">02 / Risk</div>
+      <div class="deliverable-title">Operational Risk Report</div>
+      <div class="deliverable-desc">Scored assessment of hallucination exposure, oversight gaps, documentation weaknesses, and compliance vulnerabilities.</div>
+    </div>
+    <div class="deliverable-card">
+      <div class="deliverable-icon">03 / Automation</div>
+      <div class="deliverable-title">Automation Opportunity Roadmap</div>
+      <div class="deliverable-desc">A ranked list of processes where AI can deliver measurable efficiency gains, with implementation complexity assessed per item.</div>
+    </div>
+    <div class="deliverable-card">
+      <div class="deliverable-icon">04 / Governance</div>
+      <div class="deliverable-title">AI Governance Framework</div>
+      <div class="deliverable-desc">Human-in-the-loop protocols, model evaluation routines, incident response procedures, and compliance documentation starters.</div>
+    </div>
+    <div class="deliverable-card">
+      <div class="deliverable-icon">05 / Roadmap</div>
+      <div class="deliverable-title">Implementation Roadmap</div>
+      <div class="deliverable-desc">Prioritized action plan across 0–3, 3–6, and 6–12 month horizons. Clear ownership and success metrics for every recommendation.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="section-tag reveal">How It Works</div>
+  <h2 class="reveal">Four Phases.<br>One Clear Outcome.</h2>
+
+  <div class="phases reveal">
+    <div class="phase">
+      <div class="phase-num">01</div>
+      <div class="phase-week">Week 1</div>
+      <div class="phase-name">Discovery</div>
+      <ul class="phase-items">
+        <li>Stakeholder interviews</li>
+        <li>Tool & system inventory</li>
+        <li>AI workflow documentation</li>
+        <li>Context mapping</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">02</div>
+      <div class="phase-week">Week 2</div>
+      <div class="phase-name">Audit</div>
+      <ul class="phase-items">
+        <li>Prompt pipeline review</li>
+        <li>Risk scoring per dimension</li>
+        <li>Bottleneck identification</li>
+        <li>Workflow gap analysis</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">03</div>
+      <div class="phase-week">Week 3</div>
+      <div class="phase-name">Strategy</div>
+      <ul class="phase-items">
+        <li>Governance design</li>
+        <li>Automation prioritization</li>
+        <li>SOP drafting</li>
+        <li>Maturity scoring</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-num">04</div>
+      <div class="phase-week">Week 4</div>
+      <div class="phase-name">Delivery</div>
+      <ul class="phase-items">
+        <li>Full report package</li>
+        <li>Strategy presentation</li>
+        <li>Q&A session</li>
+        <li>Roadmap handoff</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="about">
+  <div class="section-tag reveal">Why Laroche Lab</div>
+  <div class="why-grid reveal">
+    <div class="why-left">
+      <div class="why-heading">Operational<br>Expertise.<br>AI Depth.</div>
+      <div>
+        <div class="cred-item">
+          <div class="cred-dot"></div>
+          <div>
+            <strong>Amazon-Scale Auditing Background</strong>
+            <p>Experience auditing operations at significant scale — where process discipline is non-negotiable and quality control is systematic.</p>
+          </div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-dot"></div>
+          <div>
+            <strong>AI + Operations Rare Combination</strong>
+            <p>Most AI consultants build models. Most ops consultants avoid AI. This practice sits at the intersection — where the real problems live.</p>
+          </div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-dot"></div>
+          <div>
+            <strong>Governance-Ready in Europe</strong>
+            <p>With EU AI Act compliance on the horizon, operational governance is no longer optional. We're built for this moment.</p>
+          </div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-dot"></div>
+          <div>
+            <strong>Multilingual Operations</strong>
+            <p>Fluent across English, French, and Spanish environments — built for international teams and cross-border AI deployments.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="why-right">
+      <div class="profile-card">
+        <div class="profile-initial">GL</div>
+        <div class="profile-name">Guy-Henry Laroche</div>
+        <div class="profile-role">Founder & Lead Consultant</div>
+        <p class="profile-bio">
+          Former Amazon Quality Auditor with deep expertise in operational excellence, process governance, and AI workflow design. Built Laroche Lab to help organizations deploy AI on a foundation that actually holds.
+        </p>
+        <div class="tags">
+          <span class="tag">Amazon QA</span>
+          <span class="tag">Process Auditing</span>
+          <span class="tag">AI Governance</span>
+          <span class="tag">Operations</span>
+          <span class="tag">EN / FR / ES</span>
+        </div>
+      </div>
+
+      <div style="margin-top:40px; padding: 28px 0; border-top: 1px solid var(--border);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--red); text-transform: uppercase; margin-bottom: 12px;">Ideal Clients</div>
+        <div style="font-size: 14px; color: var(--mid); line-height: 1.8;">
+          AI startups &nbsp;·&nbsp; SaaS companies &nbsp;·&nbsp; AI product teams &nbsp;·&nbsp; Customer support operations &nbsp;·&nbsp; E-commerce scaling teams
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-tag reveal">Investment</div>
+  <div class="pricing-wrap reveal">
+    <div>
+      <h2>Transparent.<br>Fixed Scope.<br>Real Value.</h2>
+      <p style="margin-top: 20px;">The AI Operations Audit is a fixed-scope engagement with clear deliverables and a defined timeline. No surprise invoices. No scope creep. The price reflects the operational depth and strategic value of the output.</p>
+      <div style="margin-top:36px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
+          <span style="color: var(--red);">✓</span> 5 structured deliverables
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
+          <span style="color: var(--red);">✓</span> 3–4 week engagement
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
+          <span style="color: var(--red);">✓</span> Strategy presentation included
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
+          <span style="color: var(--red);">✓</span> EU AI Act alignment
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
+          <span style="color: var(--red);">✓</span> Scalable to implementation phase
+        </div>
+      </div>
+    </div>
+    <div class="price-block">
+      <div class="price-from">Starting from</div>
+      <div class="price-amount">€8K</div>
+      <div class="price-unit">Per audit engagement</div>
+      <div style="margin-top: 28px;">
+        <a href="mailto:guyhlaroche@gmail.com" class="btn-primary" style="display:block; text-align:center;">Book Your Audit →</a>
+      </div>
+      <div style="margin-top: 14px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--mid); text-align: center; text-transform: uppercase;">Pricing scales with org size</div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE TOOLS -->
+<section id="tools" style="padding: 80px 60px; border-top: 1px solid var(--border);">
+  <div class="section-tag reveal">Live Portfolio</div>
+  <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;" class="reveal">
+
+    <div style="border: 1px solid var(--border); padding: 36px; position: relative; transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(245,244,240,0.35)'" onmouseout="this.style.borderColor='rgba(245,244,240,0.12)'">
+      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--red); text-transform: uppercase; margin-bottom: 16px;">Tool 01</div>
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.05em; margin-bottom: 12px;">AI Quality Audit Evaluator</div>
+      <p style="font-size: 14px; color: var(--mid); line-height: 1.7; margin-bottom: 24px;">A structured rubric for evaluating AI-generated outputs across accuracy, tone, policy compliance, and hallucination risk. 10 scored test cases. 3 systemic failure patterns identified.</p>
+      <a href="https://guyhlaroche-eng.github.io/laroche-lab-portfolio/ai_quality_audit_evaluator.html" target="_blank" class="btn-primary" style="font-size: 11px; padding: 12px 24px;">View Live Tool →</a>
+    </div>
+
+    <div style="border: 1px solid var(--border); padding: 36px; position: relative; transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(245,244,240,0.35)'" onmouseout="this.style.borderColor='rgba(245,244,240,0.12)'">
+      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--red); text-transform: uppercase; margin-bottom: 16px;">Tool 02</div>
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.05em; margin-bottom: 12px;">AI Operations Maturity Assessment</div>
+      <p style="font-size: 14px; color: var(--mid); line-height: 1.7; margin-bottom: 24px;">A 6-dimension scoring framework that evaluates organizational AI readiness. Produces a maturity level and prioritized recommendations. Used as the intake assessment for Laroche Lab audits.</p>
+      <a href="https://playful-variraptor-7a2.notion.site/Laroche_Lab_Notion_Scorecard-3333bab7afb1803b8a21f8355c0f157b" target="_blank" class="btn-primary" style="font-size: 11px; padding: 12px 24px;">View Assessment →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="cta-bg"></div>
+  <h2>Stop Building on<br>Unstable Ground.</h2>
+  <p>Your AI systems are only as reliable as the operations beneath them. Let's audit what you have and build the foundation your AI needs to scale.</p>
+  <div class="cta-actions">
+    <a href="mailto:guyhlaroche@gmail.com" class="btn-primary">Book an AI Operations Audit →</a>
+    <a href="mailto:guyhlaroche@gmail.com" class="btn-ghost">Ask a Question</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">© 2026 Laroche Lab — AI Operations</div>
+  <div class="footer-right">
+    <a href="#offer">Services</a>
+    <a href="#process">Process</a>
+    <a href="#about">About</a>
+    <a href="https://linkedin.com/in/guy-henry-laroche-0b3335168" target="_blank">LinkedIn</a>
+    <a href="mailto:guyhlaroche@gmail.com">guyhlaroche@gmail.com</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 16}px, ${ry - 16}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(1.8)';
+      ring.style.borderColor = 'var(--red)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.borderColor = 'rgba(245,244,240,0.4)';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(en
