@@ -5,7 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Laroche Lab — AI Operations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  /* Fallback fonts while Google Fonts loads */
+  @font-face { font-family: 'Bebas Neue'; src: local('Impact'), local('Arial Narrow'); font-display: swap; }
+</style>
 <style>
   :root {
     --black: #080808;
@@ -758,9 +763,13 @@
   }
 
   .reveal {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.hidden {
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
   }
   .reveal.visible {
     opacity: 1;
@@ -1088,7 +1097,7 @@
       <div class="price-amount">€8K</div>
       <div class="price-unit">Per audit engagement</div>
       <div style="margin-top: 28px;">
-        <a href="mailto:guyhlaroche@gmail.com" class="btn-primary" style="display:block; text-align:center;">Book Your Audit →</a>
+        <a href="/cdn-cgi/l/email-protection#e681939f8e8a879489858e83a6818b878f8ac885898b" class="btn-primary" style="display:block; text-align:center;">Book Your Audit →</a>
       </div>
       <div style="margin-top: 14px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--mid); text-align: center; text-transform: uppercase;">Pricing scales with org size</div>
     </div>
@@ -1123,8 +1132,8 @@
   <h2>Stop Building on<br>Unstable Ground.</h2>
   <p>Your AI systems are only as reliable as the operations beneath them. Let's audit what you have and build the foundation your AI needs to scale.</p>
   <div class="cta-actions">
-    <a href="mailto:guyhlaroche@gmail.com" class="btn-primary">Book an AI Operations Audit →</a>
-    <a href="mailto:guyhlaroche@gmail.com" class="btn-ghost">Ask a Question</a>
+    <a href="/cdn-cgi/l/email-protection#d7b0a2aebfbbb6a5b8b4bfb297b0bab6bebbf9b4b8ba" class="btn-primary">Book an AI Operations Audit →</a>
+    <a href="/cdn-cgi/l/email-protection#1f786a6677737e6d707c777a5f78727e7673317c7072" class="btn-ghost">Ask a Question</a>
   </div>
 </section>
 
@@ -1136,11 +1145,11 @@
     <a href="#process">Process</a>
     <a href="#about">About</a>
     <a href="https://linkedin.com/in/guy-henry-laroche-0b3335168" target="_blank">LinkedIn</a>
-    <a href="mailto:guyhlaroche@gmail.com">guyhlaroche@gmail.com</a>
+    <a href="/cdn-cgi/l/email-protection#5a3d2f2332363b283539323f1a3d373b333674393537"><span class="__cf_email__" data-cfemail="4d2a383425212c3f222e25280d2a202c2421632e2220">[email&#160;protected]</span></a>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -1160,15 +1169,4 @@
   animateRing();
 
   document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform += ' scale(1.8)';
-      ring.style.borderColor = 'var(--red)';
-    });
-    el.addEventListener('mouseleave', () => {
-      ring.style.borderColor = 'rgba(245,244,240,0.4)';
-    });
-  });
-
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(en
+    e
