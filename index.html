@@ -23,1229 +23,181 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.6; overflow-x: hidden; }
 
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    overflow-x: hidden;
-    cursor: default;
-  }
+  /* TYPOGRAPHY */
+  h1, h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; line-height: 0.9; }
+  .mono { font-family: 'DM+Mono', monospace; text-transform: uppercase; font-size: 0.75rem; color: var(--mid); letter-spacing: 0.1em; }
 
-  /* CURSOR */
-  .cursor { display: none; }
-  .cursor-ring { display: none; }
+  /* LAYOUT */
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 4vw; }
+  section { padding: 100px 0; border-top: 1px solid var(--border); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 28px 60px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(8,8,8,0.85);
-    backdrop-filter: blur(12px);
-  }
-
-  .logo-mark {
-    display: flex; align-items: center; gap: 14px;
-  }
-
-  .logo-frame {
-    width: 40px; height: 40px;
-    border: 1.5px solid var(--white);
-    position: relative;
-    flex-shrink: 0;
-  }
-  .logo-frame::after {
-    content: '';
-    position: absolute;
-    bottom: -4px; right: -4px;
-    width: 14px; height: 14px;
-    background: var(--red);
-  }
-  .logo-frame span {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 0.05em;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--white);
-  }
-
-  .logo-text {
-    display: flex; flex-direction: column; gap: 1px;
-  }
-  .logo-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 15px;
-    letter-spacing: 0.25em;
-    color: var(--white);
-  }
-  .logo-sub {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--mid);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-
-  .nav-links {
-    display: flex; gap: 40px; align-items: center;
-    list-style: none;
-  }
-  .nav-links a {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--mid);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--white); }
-
-  .nav-cta {
-    border: 1px solid var(--white);
-    padding: 10px 22px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--white);
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
-  }
-  .nav-cta:hover { background: var(--white); color: var(--black); }
+  /* HEADER & NAV */
+  nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 30px 4vw; display: flex; justify-content: space-between; align-items: flex-start; mix-blend-mode: difference; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; }
+  .nav-links a { margin-left: 30px; font-size: 0.9rem; text-decoration: none; color: var(--white); transition: opacity 0.3s; }
+  .nav-links a:hover { opacity: 0.5; }
 
   /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding: 0 60px 80px;
-    position: relative;
-    overflow: hidden;
-  }
+  .hero { height: 100vh; display: flex; align-items: center; border-top: none; padding-top: 120px; }
+  .hero h1 { font-size: clamp(5rem, 15vw, 12rem); margin-bottom: 20px; }
+  .hero-meta { display: flex; align-items: flex-end; justify-content: space-between; width: 100%; }
+  .tagline { max-width: 400px; font-size: 1.1rem; }
 
-  .hero-bg-text {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(120px, 18vw, 260px);
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(245,244,240,0.04);
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
-    letter-spacing: 0.05em;
-  }
-
-  .hero-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    color: var(--red);
-    text-transform: uppercase;
-    margin-bottom: 28px;
-    opacity: 0;
-    animation: fadeUp 0.7s ease 0.2s forwards;
-  }
-
-  .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(60px, 8.5vw, 130px);
-    line-height: 0.92;
-    letter-spacing: 0.02em;
-    max-width: 900px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.4s forwards;
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--mid);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.38em;
-    font-weight: 300;
-    letter-spacing: 0.01em;
-    display: block;
-    margin-bottom: 8px;
-  }
-
-  .hero-bottom {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    margin-top: 60px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.7s forwards;
-  }
-
-  .hero-desc {
-    max-width: 380px;
-    color: var(--mid);
-    font-size: 15px;
-    line-height: 1.7;
-    font-weight: 300;
-  }
-
-  .hero-actions {
-    display: flex; gap: 16px; align-items: center;
-  }
-
-  .btn-primary {
-    background: var(--red);
-    color: var(--white);
-    padding: 16px 36px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.2s;
-    display: inline-block;
-  }
-  .btn-primary:hover { background: #a31f14; transform: translateY(-2px); }
-
-  .btn-ghost {
-    border: 1px solid var(--border);
-    color: var(--mid);
-    padding: 16px 36px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .btn-ghost:hover { border-color: var(--white); color: var(--white); }
-
-  .hero-scroll {
-    position: absolute;
-    right: 60px; top: 50%;
-    transform: translateY(-50%) rotate(90deg);
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    color: var(--mid);
-    text-transform: uppercase;
-    display: flex; align-items: center; gap: 12px;
-    opacity: 0;
-    animation: fadeIn 1s ease 1.2s forwards;
-  }
-  .hero-scroll::before {
-    content: '';
-    width: 40px; height: 1px;
-    background: var(--mid);
-  }
-
-  /* DIVIDER LINE */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 0 60px;
-  }
-
-  /* STATS STRIP */
-  .stats-strip {
+  /* LAB SECTION (LIVE TOOLS) */
+  .lab-card { 
+    background: rgba(245,244,240,0.03); 
+    border: 1px solid var(--border); 
+    padding: 40px; 
+    transition: background 0.4s, border 0.4s;
     display: flex;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
   }
-  .stat-item {
-    flex: 1;
-    padding: 40px 60px;
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 8px;
+  .lab-card:hover { background: rgba(245,244,240,0.06); border-color: rgba(245,244,240,0.3); }
+  .lab-card h3 { font-size: 2.5rem; margin: 15px 0; }
+  .lab-card p { margin-bottom: 25px; color: var(--mid); }
+  .btn-tool { 
+    display: inline-block; 
+    padding: 12px 24px; 
+    background: var(--white); 
+    color: var(--black); 
+    text-decoration: none; 
+    font-weight: 500;
+    font-size: 0.9rem;
     transition: background 0.3s;
-  }
-  .stat-item:last-child { border-right: none; }
-  .stat-item:hover { background: rgba(245,244,240,0.02); }
-
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    letter-spacing: 0.03em;
-    color: var(--white);
-  }
-  .stat-num span { color: var(--red); }
-  .stat-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--mid);
-  }
-
-  /* SECTION DEFAULTS */
-  section { padding: 120px 60px; }
-
-  .section-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 20px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .section-tag::before {
-    content: '';
-    width: 24px; height: 1px;
-    background: var(--red);
-  }
-
-  /* PROBLEM */
-  .problem {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-
-  .problem-left h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(42px, 5vw, 72px);
-    line-height: 0.95;
-    letter-spacing: 0.02em;
-    margin-bottom: 28px;
-  }
-
-  .problem-left p {
-    color: var(--mid);
-    font-size: 16px;
-    line-height: 1.75;
-    max-width: 420px;
-  }
-
-  .problem-right {
-    display: flex; flex-direction: column; gap: 0;
-  }
-
-  .problem-item {
-    display: flex; align-items: flex-start; gap: 20px;
-    padding: 24px 0;
-    border-bottom: 1px solid var(--border);
-    transition: padding-left 0.3s ease;
-  }
-  .problem-item:first-child { border-top: 1px solid var(--border); }
-  .problem-item:hover { padding-left: 12px; }
-
-  .problem-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--red);
-    letter-spacing: 0.1em;
-    padding-top: 4px;
-    flex-shrink: 0;
-  }
-
-  .problem-text strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 400;
-    margin-bottom: 4px;
-  }
-  .problem-text span {
-    font-size: 13px;
-    color: var(--mid);
-  }
-
-  /* OFFER */
-  .offer-header {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    margin-bottom: 60px;
-  }
-
-  .offer-header h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(42px, 5vw, 72px);
-    line-height: 0.95;
-    letter-spacing: 0.02em;
-  }
-
-  .offer-header p {
-    max-width: 320px;
-    color: var(--mid);
-    font-size: 14px;
-    line-height: 1.7;
-    text-align: right;
-  }
-
-  .deliverables-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    border: 1px solid var(--border);
-  }
-
-  .deliverable-card {
-    padding: 36px 28px;
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 16px;
-    transition: background 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .deliverable-card:last-child { border-right: none; }
-  .deliverable-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--red);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-  }
-  .deliverable-card:hover { background: rgba(245,244,240,0.02); }
-  .deliverable-card:hover::before { transform: scaleX(1); }
-
-  .deliverable-icon {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--red);
-    text-transform: uppercase;
-  }
-
-  .deliverable-title {
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 1.4;
-  }
-
-  .deliverable-desc {
-    font-size: 12px;
-    color: var(--mid);
-    line-height: 1.6;
-    flex: 1;
-  }
-
-  /* PROCESS */
-  .process { background: rgba(245,244,240,0.02); }
-
-  .process h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(42px, 5vw, 72px);
-    letter-spacing: 0.02em;
-    margin-bottom: 60px;
-  }
-
-  .phases {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    border: 1px solid var(--border);
-  }
-
-  .phase {
-    padding: 48px 36px;
-    border-right: 1px solid var(--border);
-    position: relative;
-  }
-  .phase:last-child { border-right: none; }
-
-  .phase-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 80px;
-    color: rgba(245,244,240,0.05);
-    line-height: 1;
-    margin-bottom: 20px;
-  }
-
-  .phase-week {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    color: var(--red);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .phase-name {
-    font-size: 18px;
-    font-weight: 400;
-    margin-bottom: 16px;
-  }
-
-  .phase-items {
-    list-style: none;
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .phase-items li {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--mid);
-    letter-spacing: 0.05em;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .phase-items li::before {
-    content: '—';
-    color: var(--red);
-    flex-shrink: 0;
-  }
-
-  /* WHY */
-  .why-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border: 1px solid var(--border);
-    margin-top: 60px;
-  }
-
-  .why-left {
-    padding: 60px;
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 40px;
-  }
-
-  .why-right {
-    padding: 60px;
-    display: flex; flex-direction: column; justify-content: space-between;
-  }
-
-  .why-heading {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(36px, 4vw, 58px);
-    letter-spacing: 0.02em;
-    line-height: 0.95;
-  }
-
-  .cred-item {
-    display: flex; gap: 20px; align-items: flex-start;
-    padding: 20px 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .cred-dot {
-    width: 6px; height: 6px;
-    background: var(--red);
-    border-radius: 50%;
-    margin-top: 6px;
-    flex-shrink: 0;
-  }
-
-  .cred-item strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 400;
-    margin-bottom: 4px;
-  }
-  .cred-item p {
-    font-size: 13px;
-    color: var(--mid);
-    line-height: 1.6;
-  }
-
-  .profile-card {
-    border: 1px solid var(--border);
-    padding: 36px;
-    position: relative;
-  }
-  .profile-card::after {
-    content: '';
-    position: absolute;
-    bottom: -1px; right: -1px;
-    width: 20px; height: 20px;
-    background: var(--red);
-  }
-
-  .profile-initial {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 72px;
-    color: rgba(245,244,240,0.07);
-    line-height: 1;
-    margin-bottom: 20px;
-  }
-
-  .profile-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-  }
-
-  .profile-role {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--red);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .profile-bio {
-    font-size: 13px;
-    color: var(--mid);
-    line-height: 1.7;
-  }
-
-  .tags {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    margin-top: 20px;
-  }
-  .tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--mid);
-    border: 1px solid var(--border);
-    padding: 6px 12px;
-  }
-
-  /* PRICING */
-  .pricing-wrap {
-    border: 1px solid var(--border);
-    padding: 60px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 60px;
-    align-items: center;
-    margin-top: 60px;
-  }
-
-  .pricing-wrap h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(42px, 5vw, 72px);
-    letter-spacing: 0.02em;
-    line-height: 0.95;
-    margin-bottom: 20px;
-  }
-
-  .pricing-wrap p {
-    color: var(--mid);
-    font-size: 15px;
-    line-height: 1.7;
-    max-width: 480px;
-  }
-
-  .price-block {
     text-align: center;
-    border: 1px solid var(--border);
-    padding: 40px 60px;
-    position: relative;
-    flex-shrink: 0;
   }
-  .price-block::before {
-    content: 'AI Operations Audit';
-    position: absolute;
-    top: -1px; left: 50%; transform: translateX(-50%);
-    background: var(--red);
-    color: var(--white);
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 5px 14px;
-    white-space: nowrap;
-  }
-
-  .price-from {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--mid);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    margin-top: 10px;
-  }
-
-  .price-amount {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 72px;
-    letter-spacing: 0.02em;
-    line-height: 1;
-  }
-
-  .price-unit {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--mid);
-    letter-spacing: 0.1em;
-    margin-top: 4px;
-  }
-
-  /* CTA */
-  .cta-section {
-    text-align: center;
-    padding: 120px 60px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at center, rgba(200,40,26,0.06) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .cta-section h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(50px, 7vw, 100px);
-    letter-spacing: 0.02em;
-    line-height: 0.92;
-    margin-bottom: 28px;
-    position: relative;
-  }
-
-  .cta-section p {
-    color: var(--mid);
-    font-size: 16px;
-    line-height: 1.7;
-    margin-bottom: 48px;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-  }
-
-  .cta-actions {
-    display: flex; gap: 16px; justify-content: center;
-    position: relative;
-  }
+  .btn-tool:hover { background: var(--red); color: var(--white); }
 
   /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 40px 60px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-
-  .footer-left {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--mid);
-    text-transform: uppercase;
-  }
-
-  .footer-right {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--mid);
-    text-transform: uppercase;
-    display: flex; gap: 32px;
-  }
-  .footer-right a { color: var(--mid); text-decoration: none; transition: color 0.2s; }
-  .footer-right a:hover { color: var(--white); }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.hidden {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* RESPONSIVE */
+  footer { padding: 60px 4vw; display: flex; justify-content: space-between; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--mid); }
+  
+  /* MOBILE ADAPTATION */
   @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
-    .nav-links { display: none; }
-    section { padding: 80px 24px; }
-    .hero { padding: 0 24px 60px; }
-    .problem { grid-template-columns: 1fr; gap: 48px; }
-    .deliverables-grid { grid-template-columns: repeat(2, 1fr); }
-    .phases { grid-template-columns: 1fr 1fr; }
-    .why-grid { grid-template-columns: 1fr; }
-    .pricing-wrap { grid-template-columns: 1fr; }
-    .stats-strip { flex-wrap: wrap; }
-    .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
-    .hero-scroll { display: none; }
-    footer { flex-direction: column; gap: 20px; text-align: center; }
-    .footer-right { flex-wrap: wrap; justify-content: center; }
-    .offer-header { flex-direction: column; align-items: flex-start; gap: 16px; }
-    .offer-header p { text-align: left; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 40px; }
+    .hero h1 { font-size: 6rem; }
+    .hero-meta { flex-direction: column; align-items: flex-start; gap: 40px; }
   }
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<!-- NAV -->
 <nav>
-  <div class="logo-mark">
-    <div class="logo-frame"><span>LR</span></div>
-    <div class="logo-text">
-      <div class="logo-name">Laroche Lab</div>
-      <div class="logo-sub">AI Operations</div>
-    </div>
-  </div>
-  <ul class="nav-links">
-    <li><a href="#offer">Services</a></li>
-    <li><a href="#casestudy">Case Study</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-  </ul>
-  <a href="#contact" class="nav-cta">Book Audit</a>
-</nav>
-
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-bg-text">LAROCHE</div>
-
-  <div class="hero-tag">AI Operations Consulting</div>
-  <h1>
-    <em>Reliable AI starts with</em>
-    Operational<br>Discipline
-  </h1>
-
-  <div class="hero-bottom">
-    <p class="hero-desc">
-      Most AI projects fail not because of the model — but because of poor workflows, undocumented processes, and absent governance. We fix the foundation first.
-    </p>
-    <div class="hero-actions">
-      <a href="#offer" class="btn-primary">View the Audit →</a>
-      <a href="#contact" class="btn-ghost">Book a Call</a>
-    </div>
-  </div>
-
-  <div class="hero-scroll">Scroll to explore</div>
-</section>
-
-<!-- STATS STRIP -->
-<div class="stats-strip reveal">
-  <div class="stat-item">
-    <div class="stat-num">3<span>–4</span></div>
-    <div class="stat-label">Weeks per engagement</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">5</div>
-    <div class="stat-label">Structured deliverables</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">€<span>4K</span></div>
-    <div class="stat-label">Audit starting price</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">99<span>%</span></div>
-    <div class="stat-label">Accuracy — GoProjexa implementation</div>
-  </div>
-</div>
-
-<!-- PROBLEM -->
-<section id="problem">
-  <div class="section-tag">The Problem</div>
-  <div class="problem">
-    <div class="problem-left reveal">
-      <h2>AI Without Structure Is Just Noise</h2>
-      <p>Companies rush to deploy AI tools without fixing the operational layer underneath. The result is inconsistent outputs, broken trust, and costly failures.</p>
-    </div>
-    <div class="problem-right reveal">
-      <div class="problem-item">
-        <div class="problem-num">01</div>
-        <div class="problem-text">
-          <strong>Undocumented Workflows</strong>
-          <span>AI agents operate on top of processes no one has mapped or validated.</span>
-        </div>
-      </div>
-      <div class="problem-item">
-        <div class="problem-num">02</div>
-        <div class="problem-text">
-          <strong>No Prompt Governance</strong>
-          <span>Prompts change constantly with no version control, ownership, or evaluation.</span>
-        </div>
-      </div>
-      <div class="problem-item">
-        <div class="problem-num">03</div>
-        <div class="problem-text">
-          <strong>Absent Human Oversight</strong>
-          <span>No defined review loops, escalation paths, or quality control systems.</span>
-        </div>
-      </div>
-      <div class="problem-item">
-        <div class="problem-num">04</div>
-        <div class="problem-text">
-          <strong>Zero Monitoring</strong>
-          <span>AI outputs go unchecked. Failures accumulate silently until they become visible.</span>
-        </div>
-      </div>
-      <div class="problem-item">
-        <div class="problem-num">05</div>
-        <div class="problem-text">
-          <strong>Compliance Blind Spots</strong>
-          <span>EU AI Act obligations are ignored until they become liabilities.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- OFFER -->
-<section id="offer">
-  <div class="section-tag">The Solution</div>
-  <div class="offer-header reveal">
-    <h2>Three Ways<br>to Work Together</h2>
-    <p>From diagnostic audits to full AI implementation — structured engagements designed to meet your organization where it is and move it forward.</p>
-  </div>
-
-  <div class="deliverables-grid reveal">
-    <div class="deliverable-card">
-      <div class="deliverable-icon">01 / Workflow</div>
-      <div class="deliverable-title">AI Workflow Architecture Map</div>
-      <div class="deliverable-desc">End-to-end documentation of how AI flows through your organization — prompts, agents, retrieval, validation, and human touchpoints.</div>
-    </div>
-    <div class="deliverable-card">
-      <div class="deliverable-icon">02 / Risk</div>
-      <div class="deliverable-title">Operational Risk Report</div>
-      <div class="deliverable-desc">Scored assessment of hallucination exposure, oversight gaps, documentation weaknesses, and compliance vulnerabilities.</div>
-    </div>
-    <div class="deliverable-card">
-      <div class="deliverable-icon">03 / Automation</div>
-      <div class="deliverable-title">Automation Opportunity Roadmap</div>
-      <div class="deliverable-desc">A ranked list of processes where AI can deliver measurable efficiency gains, with implementation complexity assessed per item.</div>
-    </div>
-    <div class="deliverable-card">
-      <div class="deliverable-icon">04 / Governance</div>
-      <div class="deliverable-title">AI Governance Framework</div>
-      <div class="deliverable-desc">Human-in-the-loop protocols, model evaluation routines, incident response procedures, and compliance documentation starters.</div>
-    </div>
-    <div class="deliverable-card">
-      <div class="deliverable-icon">05 / Roadmap</div>
-      <div class="deliverable-title">Implementation Roadmap</div>
-      <div class="deliverable-desc">Prioritized action plan across 0–3, 3–6, and 6–12 month horizons. Clear ownership and success metrics for every recommendation.</div>
-    </div>
-  </div>
-
-  <!-- SERVICE LINES -->
-  <div class="reveal" style="margin-top: 48px; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border);">
-
-    <div style="padding: 36px 32px; border-right: 1px solid var(--border); position: relative; overflow: hidden;">
-      <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--red);"></div>
-      <div style="font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.25em; color: var(--red); text-transform: uppercase; margin-bottom: 16px;">Service 01</div>
-      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.05em; margin-bottom: 12px;">AI Operations Audit</div>
-      <p style="font-size: 13px; color: var(--mid); line-height: 1.7; margin-bottom: 20px;">Full diagnostic of your AI workflows, governance gaps, and operational risks. Delivers 5 structured reports and a prioritized roadmap.</p>
-      <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); letter-spacing: 0.1em;">3–4 weeks · From €4,000</div>
-    </div>
-
-    <div style="padding: 36px 32px; border-right: 1px solid var(--border); position: relative; overflow: hidden;">
-      <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--mid);"></div>
-      <div style="font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.25em; color: var(--mid); text-transform: uppercase; margin-bottom: 16px;">Service 02</div>
-      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.05em; margin-bottom: 12px;">AI Maturity Assessment</div>
-      <p style="font-size: 13px; color: var(--mid); line-height: 1.7; margin-bottom: 20px;">6-dimension scoring framework that evaluates your organization's AI readiness and produces a maturity level with prioritized recommendations.</p>
-      <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); letter-spacing: 0.1em;">1–2 weeks · From €2,000</div>
-    </div>
-
-    <div style="padding: 36px 32px; position: relative; overflow: hidden;">
-      <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--red);"></div>
-      <div style="font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.25em; color: var(--red); text-transform: uppercase; margin-bottom: 16px;">Service 03 · New</div>
-      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.05em; margin-bottom: 12px;">AI Implementation Sprint</div>
-      <p style="font-size: 13px; color: var(--mid); line-height: 1.7; margin-bottom: 20px;">For organizations ready to build. We design, deploy, and validate AI workflows from scratch — using the Laroche Lab™ operational standards. GoProjexa was built and deployed as a 30-day implementation sprint.</p>
-      <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid); letter-spacing: 0.1em;">30 days · From €5,000</div>
-    </div>
-
-  </div>
-</section>
-
-<!-- PROCESS -->
-<section class="process" id="process">
-  <div class="section-tag reveal">How It Works</div>
-  <h2 class="reveal">Four Phases.<br>One Clear Outcome.</h2>
-
-  <div class="phases reveal">
-    <div class="phase">
-      <div class="phase-num">01</div>
-      <div class="phase-week">Week 1</div>
-      <div class="phase-name">Discovery</div>
-      <ul class="phase-items">
-        <li>Stakeholder interviews</li>
-        <li>Tool & system inventory</li>
-        <li>AI workflow documentation</li>
-        <li>Context mapping</li>
-      </ul>
-    </div>
-    <div class="phase">
-      <div class="phase-num">02</div>
-      <div class="phase-week">Week 2</div>
-      <div class="phase-name">Audit</div>
-      <ul class="phase-items">
-        <li>Prompt pipeline review</li>
-        <li>Risk scoring per dimension</li>
-        <li>Bottleneck identification</li>
-        <li>Workflow gap analysis</li>
-      </ul>
-    </div>
-    <div class="phase">
-      <div class="phase-num">03</div>
-      <div class="phase-week">Week 3</div>
-      <div class="phase-name">Strategy</div>
-      <ul class="phase-items">
-        <li>Governance design</li>
-        <li>Automation prioritization</li>
-        <li>SOP drafting</li>
-        <li>Maturity scoring</li>
-      </ul>
-    </div>
-    <div class="phase">
-      <div class="phase-num">04</div>
-      <div class="phase-week">Week 4</div>
-      <div class="phase-name">Delivery</div>
-      <ul class="phase-items">
-        <li>Full report package</li>
-        <li>Strategy presentation</li>
-        <li>Q&A session</li>
-        <li>Roadmap handoff</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- CASE STUDY -->
-<section id="casestudy" style="padding: 120px 60px; background: rgba(200,40,26,0.04); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-  <div class="section-tag reveal">Framework in Action</div>
-
-  <div class="reveal" style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 48px;">
-
-    <!-- LEFT: Story -->
-    <div>
-      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--mid); text-transform: uppercase; margin-bottom: 16px;">Live Implementation · 30-Day Sprint</div>
-      <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(42px, 5vw, 68px); line-height: 0.92; letter-spacing: 0.02em; margin-bottom: 28px;">GoProjexa</h2>
-      <p style="font-size: 16px; color: var(--mid); line-height: 1.8; margin-bottom: 24px;">GoProjexa is the first AI-native construction management platform built entirely on the <strong style="color: var(--white); font-weight: 400;">Laroche Lab™ operational standards</strong>. By implementing our 4-dimension audit rubric, GoProjexa transforms raw WhatsApp voice notes into donor-ready, auditable site reports — with a 99% accuracy rate.</p>
-      <p style="font-size: 14px; color: var(--mid); line-height: 1.7; margin-bottom: 36px;">Designed, deployed, and validated as a 30-day AI Implementation Sprint. From workflow mapping to live production — governed end-to-end by the same framework we use in every Laroche Lab engagement.</p>
-
-      <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center;">
-        <a href="https://goprojexa.com" target="_blank" class="btn-primary">View Live Implementation →</a>
-        <a href="#contact" class="btn-ghost">Build Something Similar</a>
-      </div>
-    </div>
-
-    <!-- RIGHT: Metrics + Framework proof -->
-    <div style="display: flex; flex-direction: column; gap: 16px;">
-
-      <div style="border: 1px solid var(--border); padding: 28px 32px; display: flex; gap: 24px; align-items: flex-start; transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(245,244,240,0.35)'" onmouseout="this.style.borderColor='rgba(245,244,240,0.12)'">
-        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--red); line-height: 1; flex-shrink: 0;">99%</div>
-        <div>
-          <div style="font-size: 14px; font-weight: 400; margin-bottom: 4px;">Output Accuracy Rate</div>
-          <div style="font-size: 13px; color: var(--mid); line-height: 1.5;">Voice notes → structured, auditable site reports with near-perfect accuracy.</div>
-        </div>
-      </div>
-
-      <div style="border: 1px solid var(--border); padding: 28px 32px; display: flex; gap: 24px; align-items: flex-start; transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(245,244,240,0.35)'" onmouseout="this.style.borderColor='rgba(245,244,240,0.12)'">
-        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--red); line-height: 1; flex-shrink: 0;">30</div>
-        <div>
-          <div style="font-size: 14px; font-weight: 400; margin-bottom: 4px;">Days from Zero to Production</div>
-          <div style="font-size: 13px; color: var(--mid); line-height: 1.5;">Full AI Implementation Sprint — workflow design, deployment, and validation complete.</div>
-        </div>
-      </div>
-
-      <div style="border: 1px solid var(--border); padding: 28px 32px; display: flex; gap: 24px; align-items: flex-start; transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(245,244,240,0.35)'" onmouseout="this.style.borderColor='rgba(245,244,240,0.12)'">
-        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--red); line-height: 1; flex-shrink: 0;">4</div>
-        <div>
-          <div style="font-size: 14px; font-weight: 400; margin-bottom: 4px;">Dimensions of the Audit Rubric Applied</div>
-          <div style="font-size: 13px; color: var(--mid); line-height: 1.5;">Accuracy · Tone · Policy Compliance · Hallucination Risk — embedded into production.</div>
-        </div>
-      </div>
-
-      <div style="border: 1px solid var(--border); padding: 20px 32px;">
-        <div style="font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--mid); text-transform: uppercase; margin-bottom: 10px;">Industry</div>
-        <div style="font-size: 14px; color: var(--white);">Construction Management · Donor Reporting · NGO Operations</div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- WHY -->
-<section id="about">
-  <div class="section-tag reveal">Why Laroche Lab</div>
-  <div class="why-grid reveal">
-    <div class="why-left">
-      <div class="why-heading">Operational<br>Expertise.<br>AI Depth.</div>
-      <div>
-        <div class="cred-item">
-          <div class="cred-dot"></div>
-          <div>
-            <strong>Built AI Tools at Amazon Scale</strong>
-            <p>Designed and deployed a GenAI-enabled audit tool that improved team efficiency by 40% and reduced cycle times by 25%. Not advisory — hands-on implementation at scale.</p>
-          </div>
-        </div>
-        <div class="cred-item">
-          <div class="cred-dot"></div>
-          <div>
-            <strong>Human-in-the-Loop Validator — TARDIS Program</strong>
-            <p>Served as designated validator on live Amazon AI decision systems — identifying bias patterns and edge-case failures before they reached customers. Direct AI governance experience, not theoretical.</p>
-          </div>
-        </div>
-        <div class="cred-item">
-          <div class="cred-dot"></div>
-          <div>
-            <strong>Governance-Ready for the EU AI Act</strong>
-            <p>Operational governance is no longer optional. With compliance obligations now in force across Europe, the methodology behind Laroche Lab is built for exactly this moment.</p>
-          </div>
-        </div>
-        <div class="cred-item">
-          <div class="cred-dot"></div>
-          <div>
-            <strong>Multilingual · International · Remote-Native</strong>
-            <p>Fluent in French, English, and Spanish. 20+ years across Canada, Haiti, and Spain. Built for cross-border teams and international AI deployments.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="why-right">
-      <div class="profile-card">
-        <div class="profile-initial">GL</div>
-        <div class="profile-name">Guy-Henry Laroche</div>
-        <div class="profile-role">Founder & Lead Consultant</div>
-        <p class="profile-bio">
-          I help organizations make AI actually work — not just deploy it. After 5+ years at Amazon designing and validating AI workflows at scale, I've seen firsthand why most AI projects fail: not because of the model, but because of what's underneath it. I don't just advise — I've built the systems.
-        </p>
-        <div class="tags">
-          <span class="tag">Amazon Alumni</span>
-          <span class="tag">AI Governance</span>
-          <span class="tag">Process Auditing</span>
-          <span class="tag">Responsible AI</span>
-          <span class="tag">EN / FR / ES</span>
-        </div>
-        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-          <a href="https://linkedin.com/in/guy-henry-laroche-0b3335168" target="_blank" style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--mid); border: 1px solid var(--border); padding: 7px 14px; text-decoration: none; text-transform: uppercase; transition: color 0.2s, border-color 0.2s;" onmouseover="this.style.color='#f5f4f0';this.style.borderColor='rgba(245,244,240,0.4)'" onmouseout="this.style.color='#9a9a8e';this.style.borderColor='rgba(245,244,240,0.12)'">LinkedIn →</a>
-          <a href="/cdn-cgi/l/email-protection#1770626e7f7b766578747f7257707a767e7b3974787a" style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--mid); border: 1px solid var(--border); padding: 7px 14px; text-decoration: none; text-transform: uppercase; transition: color 0.2s, border-color 0.2s;" onmouseover="this.style.color='#f5f4f0';this.style.borderColor='rgba(245,244,240,0.4)'" onmouseout="this.style.color='#9a9a8e';this.style.borderColor='rgba(245,244,240,0.12)'">Email →</a>
-        </div>
-      </div>
-
-      <div style="margin-top: 24px; border: 1px solid var(--border); padding: 24px;">
-        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--red); text-transform: uppercase; margin-bottom: 16px;">Live Portfolio</div>
-        <a href="https://guyhlaroche-eng.github.io/laroche-lab-portfolio/ai_quality_audit_evaluator.html" target="_blank" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); text-decoration: none; transition: padding-left 0.2s;" onmouseover="this.style.paddingLeft='8px'" onmouseout="this.style.paddingLeft='0'">
-          <div>
-            <div style="font-size: 13px; color: var(--white); font-weight: 400; margin-bottom: 2px;">AI Quality Audit Evaluator</div>
-            <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid);">10 test cases · 4 dimensions · Live tool</div>
-          </div>
-          <span style="color: var(--red); font-size: 14px;">→</span>
-        </a>
-        <a href="https://playful-variraptor-7a2.notion.site/Laroche_Lab_Notion_Scorecard-3333bab7afb1803b8a21f8355c0f157b" target="_blank" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; text-decoration: none; transition: padding-left 0.2s;" onmouseover="this.style.paddingLeft='8px'" onmouseout="this.style.paddingLeft='0'">
-          <div>
-            <div style="font-size: 13px; color: var(--white); font-weight: 400; margin-bottom: 2px;">AI Operations Maturity Assessment</div>
-            <div style="font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid);">6 dimensions · Maturity scoring · Free assessment</div>
-          </div>
-          <span style="color: var(--red); font-size: 14px;">→</span>
-        </a>
-      </div>
-
-      <div style="margin-top: 16px; padding: 20px 0; border-top: 1px solid var(--border);">
-        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--red); text-transform: uppercase; margin-bottom: 12px;">Open To</div>
-        <div style="font-size: 14px; color: var(--mid); line-height: 1.9;">
-          AI Operations / Quality / Governance roles &nbsp;·&nbsp; Consulting engagements &nbsp;·&nbsp; Remote worldwide &nbsp;·&nbsp; Relocation considered
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section id="pricing">
-  <div class="section-tag reveal">Investment</div>
-  <div class="pricing-wrap reveal">
-    <div>
-      <h2>Transparent.<br>Fixed Scope.<br>Real Value.</h2>
-      <p style="margin-top: 20px;">The AI Operations Audit is a fixed-scope engagement with clear deliverables and a defined timeline. No surprise invoices. No scope creep. The price reflects the operational depth and strategic value of the output.</p>
-      <div style="margin-top:36px; display: flex; flex-direction: column; gap: 12px;">
-        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
-          <span style="color: var(--red);">✓</span> 5 structured deliverables
-        </div>
-        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
-          <span style="color: var(--red);">✓</span> 3–4 week engagement
-        </div>
-        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
-          <span style="color: var(--red);">✓</span> Strategy presentation included
-        </div>
-        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
-          <span style="color: var(--red);">✓</span> EU AI Act alignment
-        </div>
-        <div style="display: flex; gap: 12px; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--mid);">
-          <span style="color: var(--red);">✓</span> Scalable to implementation phase
-        </div>
-      </div>
-    </div>
-    <div class="price-block">
-      <div class="price-from">Starting from</div>
-      <div class="price-amount">€4K</div>
-      <div class="price-unit">Per audit engagement</div>
-      <div style="margin-top: 28px;">
-        <a href="/cdn-cgi/l/email-protection#ea8d9f9382868b988589828faa8d878b8386c4898587" class="btn-primary" style="display:block; text-align:center;">Book Your Audit →</a>
-      </div>
-      <div style="margin-top: 14px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--mid); text-align: center; text-transform: uppercase;">Pricing scales with org size</div>
-    </div>
-  </div>
-</section>
-
-<!-- LIVE TOOLS -->
-<section id="tools" style="padding: 80px 60px; border-top: 1px solid var(--border);">
-  <div class="section-tag reveal">Live Portfolio</div>
-  <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;" class="reveal">
-
-    <div style="border: 1px solid var(--border); padding: 36px; position: relative; transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(245,244,240,0.35)'" onmouseout="this.style.borderColor='rgba(245,244,240,0.12)'">
-      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--red); text-transform: uppercase; margin-bottom: 16px;">Tool 01</div>
-      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.05em; margin-bottom: 12px;">AI Quality Audit Evaluator</div>
-      <p style="font-size: 14px; color: var(--mid); line-height: 1.7; margin-bottom: 24px;">A structured rubric for evaluating AI-generated outputs across accuracy, tone, policy compliance, and hallucination risk. 10 scored test cases. 3 systemic failure patterns identified.</p>
-      <a href="https://guyhlaroche-eng.github.io/laroche-lab-portfolio/ai_quality_audit_evaluator.html" target="_blank" class="btn-primary" style="font-size: 11px; padding: 12px 24px;">View Live Tool →</a>
-    </div>
-
-    <div style="border: 1px solid var(--border); padding: 36px; position: relative; transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(245,244,240,0.35)'" onmouseout="this.style.borderColor='rgba(245,244,240,0.12)'">
-      <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--red); text-transform: uppercase; margin-bottom: 16px;">Tool 02</div>
-      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.05em; margin-bottom: 12px;">AI Operations Maturity Assessment</div>
-      <p style="font-size: 14px; color: var(--mid); line-height: 1.7; margin-bottom: 24px;">A 6-dimension scoring framework that evaluates organizational AI readiness. Produces a maturity level and prioritized recommendations. Used as the intake assessment for Laroche Lab audits.</p>
-      <a href="https://playful-variraptor-7a2.notion.site/Laroche_Lab_Notion_Scorecard-3333bab7afb1803b8a21f8355c0f157b" target="_blank" class="btn-primary" style="font-size: 11px; padding: 12px 24px;">View Assessment →</a>
-    </div>
-
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section" id="contact">
-  <div class="cta-bg"></div>
-  <h2>Stop Building on<br>Unstable Ground.</h2>
-  <p>Your AI systems are only as reliable as the operations beneath them. Let's audit what you have and build the foundation your AI needs to scale.</p>
-  <div class="cta-actions">
-    <a href="/cdn-cgi/l/email-protection#d7b0a2aebfbbb6a5b8b4bfb297b0bab6bebbf9b4b8ba" class="btn-primary">Book an AI Operations Audit →</a>
-    <a href="/cdn-cgi/l/email-protection#1f786a6677737e6d707c777a5f78727e7673317c7072" class="btn-ghost">Ask a Question</a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-left">© 2026 Laroche Lab — AI Operations</div>
-  <div class="footer-right">
-    <a href="#offer">Services</a>
-    <a href="#casestudy">GoProjexa</a>
-    <a href="#process">Process</a>
+  <div class="logo">LAROCHE LAB</div>
+  <div class="nav-links">
+    <a href="#lab">AI Lab</a>
+    <a href="#services">Services</a>
     <a href="#about">About</a>
     <a href="https://linkedin.com/in/guy-henry-laroche-0b3335168" target="_blank">LinkedIn</a>
-    <a href="/cdn-cgi/l/email-protection#5a3d2f2332363b283539323f1a3d373b333674393537"><span class="__cf_email__" data-cfemail="4d2a383425212c3f222e25280d2a202c2421632e2220">[email&#160;protected]</span></a>
   </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="mono">Based in Spain — Remote Worldwide</div>
+    <h1>AI OPS<br>FOR SCALE.</h1>
+    <div class="hero-meta">
+      <div class="tagline">Providing robust operational infrastructure and AI governance frameworks for high-growth startups and global enterprises.</div>
+      <div class="hero-cta">
+        <a href="#lab" style="color: var(--red); font-family: 'Bebas Neue'; font-size: 2rem; text-decoration: none;">Launch Lab →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="container">
+    <div class="mono" style="margin-bottom: 40px;">Interactive Tools & Demos</div>
+    <h2 style="font-size: 5rem; margin-bottom: 60px;">Live AI Operations Lab</h2>
+    
+    <div class="grid-3">
+      <div class="lab-card">
+        <div>
+          <div class="mono">Interactive Engagement</div>
+          <h3>AI Assessment Agent</h3>
+          <p>A conversational assistant that embodies my methodology. It can answer questions about my experience, guide you through a maturity check, or audit a specific AI response in real-time.</p>
+        </div>
+        <a href="agent.html" class="btn-tool">Launch Agent</a>
+      </div>
+
+      <div class="lab-card">
+        <div>
+          <div class="mono">Quality Governance</div>
+          <h3>Live AI Audit Tool</h3>
+          <p>A standardized evaluation framework inspired by Amazon's TARDIS program. Input AI outputs to receive a rigorous score across Accuracy, Tone, Safety, and Utility.</p>
+        </div>
+        <a href="audit.html" class="btn-tool">Open Audit Tool</a>
+      </div>
+
+      <div class="lab-card">
+        <div>
+          <div class="mono">Strategic Roadmap</div>
+          <h3>AI Maturity Check</h3>
+          <p>A high-level diagnostic tool designed for COOs and Founders. Evaluate your company's AI readiness across six strategic dimensions to identify scaling bottlenecks.</p>
+        </div>
+        <a href="maturity.html" class="btn-tool">Run Maturity Assessment</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="container grid-2">
+    <div>
+      <div class="mono">How I help</div>
+      <h2 style="font-size: 4rem; margin-top: 20px;">Operational Engineering & Governance</h2>
+    </div>
+    <div style="padding-top: 40px;">
+      <p style="font-size: 1.25rem; margin-bottom: 40px;">I bridge the gap between raw AI capabilities and enterprise-grade reliability. My approach ensures that automation doesn't just work—it scales safely.</p>
+      
+      <div style="display: grid; gap: 30px;">
+        <div>
+          <h4 class="mono" style="color: var(--white); margin-bottom: 10px;">Workflow Automation</h4>
+          <p>Designing n8n, Python, and SQL-based pipelines that reduce manual labor while maintaining 100% data integrity.</p>
+        </div>
+        <div>
+          <h4 class="mono" style="color: var(--white); margin-bottom: 10px;">Responsible AI Governance</h4>
+          <p>Implementing human-in-the-loop validation frameworks and ensuring compliance with the EU AI Act.</p>
+        </div>
+        <div>
+          <h4 class="mono" style="color: var(--white); margin-bottom: 10px;">Operational Auditing</h4>
+          <p>Establishing rubric-based QA processes that identify bias, hallucination, and operational drift in live systems.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container grid-2">
+    <div>
+      <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop" alt="Abstract Tech" style="width: 100%; grayscale: 1; filter: contrast(1.2); opacity: 0.8;">
+    </div>
+    <div>
+      <div class="mono">Experience Highlights</div>
+      <h2 style="font-size: 4rem; margin: 20px 0;">Amazon Scale Expertise</h2>
+      <p style="margin-bottom: 30px;">Over 20 years in regulated industries, from Bell Canada to leading AI quality operations for Amazon's French Marketplace. I specialize in turning complex technological knots into streamlined, governed processes.</p>
+      
+      <div style="border-left: 1px solid var(--red); padding-left: 30px; margin-bottom: 40px;">
+        <p class="mono" style="color: var(--red);">The 40% Result</p>
+        <p style="font-size: 1.5rem; font-style: italic;">"At Amazon, I built GenAI audit tools that delivered a 40% increase in operational efficiency while maintaining strict compliance standards."</p>
+      </div>
+
+      <a href="https://linkedin.com/in/guy-henry-laroche-0b3335168" target="_blank" class="btn-tool" style="background: transparent; color: var(--white); border: 1px solid var(--border);">Connect on LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="mono">© 2026 Laroche Lab / Guy-Henry Laroche</div>
+  <div class="mono">Built for the new era of AI Operations</div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.transform = `translate(${mx -
+</body>
+</html>
