@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Operations Assessment Agent — Laroche Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  :root {
+    --black: #080808; --white: #f5f4f0; --red: #c8281a;
+    --mid: #9a9a8e; --border: rgba(245,244,240,0.12);
+    --border-h: rgba(245,244,240,0.28); --surface: rgba(245,244,240,0.04);
+  }
+  body { background:var(--black); color:var(--white); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; display:flex; flex-direction:column; }
+
+  nav { display:flex; align-items:center; justify-content:space-between; padding:20px 48px; border-bottom:1px solid var(--border); flex-shrink:0; }
+  .logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .lf { width:34px; height:34px; border:1.5px solid var(--white); position:relative; flex-shrink:0; }
+  .lf::after { content:''; position:absolute; bottom:-3px; right:-3px; width:10px; height:10px; background:var(--red); }
+  .lf span { font-family:'Bebas Neue',sans-serif; font-size:15px; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .lt { display:flex; flex-direction:column; gap:1px; }
+  .ln { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:0.25em; }
+  .ls { font-family:'DM Mono',monospace; font-size:8px; color:var(--mid); letter-spacing:0.2em; text-transform:uppercase; }
+  .nav-r { display:flex; align-items:center; gap:24px; }
+  .back { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--mid); text-decoration:none; transition:color .2s; }
+  .back:hover { color:var(--white); }
+  .status { display:flex; align-items:center; gap:8px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; color:var(--mid); text-transform:uppercase; }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--mid); flex-shrink:0; }
+  .dot.on { background:#3b6d11; box-shadow:0 0 6px rgba(59,109,17,.6); }
+
+  /* SETUP */
+  .setup { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 24px; text-align:center; }
+  .stag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.3em; color:var(--red); text-transform:uppercase; margin-bottom:20px; display:flex; align-items:center; gap:10px; justify-content:center; }
+  .stag::before, .stag::after { content:''; width:20px; height:1px; background:var(--red); }
+  .setup h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(40px,7vw,80px); letter-spacing:.02em; line-height:.92; margin-bottom:20px; }
+  .setup p { font-size:15px; color:var(--mid); line-height:1.7; max-width:480px; margin-bottom:40px; }
+  .aiwrap { width:100%; max-width:480px; border:1px solid var(--border); padding:24px; margin-bottom:16px; text-align:left; }
+  .alabel { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; color:var(--mid); text-transform:uppercase; margin-bottom:10px; display:block; }
+  .ainput { width:100%; background:transparent; border:1px solid var(--border); color:var(--white); font-family:'DM Mono',monospace; font-size:13px; padding:12px 14px; outline:none; transition:border-color .2s; }
+  .ainput:focus { border-color:var(--border-h); }
+  .ainput::placeholder { color:var(--mid); }
+  .anote { font-family:'DM Mono',monospace; font-size:10px; color:var(--mid); letter-spacing:.05em; margin-top:10px; line-height:1.6; }
+  .anote a { color:var(--red); text-decoration:none; }
+  .anote a:hover { text-decoration:underline; }
+  .sbtn { width:100%; max-width:480px; background:var(--red); color:var(--white); border:none; padding:16px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.15em; text-transform:uppercase; cursor:pointer; transition:background .2s, transform .15s; }
+  .sbtn:hover { background:#a31f14; transform:translateY(-1px); }
+  .sbtn:disabled { background:var(--mid); cursor:not-allowed; transform:none; }
+  .dlink { margin-top:20px; font-family:'DM Mono',monospace; font-size:10px; color:var(--mid); letter-spacing:.1em; cursor:pointer; text-decoration:underline; transition:color .2s; }
+  .dlink:hover { color:var(--white); }
+
+  /* CHAT */
+  .chat { flex:1; display:none; flex-direction:column; max-width:860px; width:100%; margin:0 auto; padding:0 24px; }
+
+  .pbar { padding:16px 0; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:16px; flex-shrink:0; }
+  .plabel { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--mid); text-transform:uppercase; white-space:nowrap; }
+  .ptrack { flex:1; height:2px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .pfill { height:100%; background:var(--red); border-radius:2px; transition:width .5s ease; width:0%; }
+  .ppct { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--red); min-width:36px; text-align:right; }
+
+  .msgs { flex:1; overflow-y:auto; padding:24px 0; display:flex; flex-direction:column; gap:20px; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+  .msgs::-webkit-scrollbar { width:4px; }
+  .msgs::-webkit-scrollbar-thumb { background:var(--border); }
+
+  .msg { display:flex; gap:14px; animation:mIn .3s ease; }
+  @keyframes mIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  .av { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:10px; flex-shrink:0; margin-top:2px; }
+  .av.ag { background:var(--red); color:var(--white); }
+  .av.us { background:var(--surface); border:1px solid var(--border); color:var(--mid); }
+  .mc { flex:1; }
+  .ms { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--mid); margin-bottom:6px; }
+  .mt { font-size:14px; line-height:1.75; color:var(--white); }
+  .mt strong { font-weight:400; color:var(--red); }
+  .msg.us .mt { color:var(--mid); }
+
+  .typing { display:flex; gap:5px; align-items:center; padding:4px 0; }
+  .typing span { width:6px; height:6px; background:var(--mid); border-radius:50%; animation:bl 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay:.2s; }
+  .typing span:nth-child(3) { animation-delay:.4s; }
+  @keyframes bl { 0%,80%,100% { opacity:.3; transform:scale(.8); } 40% { opacity:1; transform:scale(1); } }
+
+  .scard { border:1px solid var(--border); padding:16px 20px; margin-top:12px; background:var(--surface); }
+  .scard-t { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin-bottom:12px; }
+  .srow { display:flex; align-items:center; gap:12px; padding:6px 0; }
+  .sdim { font-size:13px; flex:1; }
+  .sval { font-family:'Bebas Neue',sans-serif; font-size:20px; min-width:28px; text-align:right; }
+  .sbar { width:80px; height:3px; background:var(--border); border-radius:2px; }
+  .sbf { height:100%; border-radius:2px; transition:width .6s ease; }
+  .hi { color:#639922; } .mi { color:#ba7517; } .lo { color:var(--red); }
+  .fhi { background:#639922; } .fmi { background:#ba7517; } .flo { background:var(--red); }
+
+  .iarea { padding:16px 0 24px; border-top:1px solid var(--border); flex-shrink:0; }
+  .irow { display:flex; gap:12px; align-items:flex-end; }
+  .cinput { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:300; padding:12px 16px; outline:none; resize:none; transition:border-color .2s; min-height:48px; max-height:120px; line-height:1.5; }
+  .cinput:focus { border-color:var(--border-h); }
+  .cinput::placeholder { color:var(--mid); }
+  .csend { background:var(--red); border:none; color:var(--white); width:48px; height:48px; cursor:pointer; font-size:18px; transition:background .2s; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .csend:hover { background:#a31f14; }
+  .csend:disabled { background:var(--mid); cursor:not-allowed; }
+  .ihint { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--mid); margin-top:8px; text-transform:uppercase; }
+
+  .rep { border:1px solid var(--border); padding:24px; margin-top:12px; background:var(--surface); }
+  .rep-t { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:.05em; margin-bottom:4px; }
+  .rep-s { font-family:'DM Mono',monospace; font-size:10px; color:var(--red); letter-spacing:.2em; text-transform:uppercase; margin-bottom:20px; }
+  .dim6 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+  .dc { border:1px solid var(--border); padding:12px; }
+  .dc-n { font-family:'DM Mono',monospace; font-size:9px; color:var(--mid); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+  .totrow { display:flex; align-items:center; gap:16px; padding:16px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); margin-bottom:16px; }
+  .cta-b { margin-top:20px; padding:20px; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+  .cta-b p { font-size:13px; color:var(--mid); line-height:1.5; flex:1; }
+  .cta-a { background:var(--red); color:var(--white); text-decoration:none; padding:12px 24px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; text-transform:uppercase; white-space:nowrap; transition:background .2s; flex-shrink:0; }
+  .cta-a:hover { background:#a31f14; }
+  .rbtn { background:transparent; border:1px solid var(--border); color:var(--mid); padding:10px 20px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; text-transform:uppercase; cursor:pointer; transition:all .2s; margin-top:12px; }
+  .rbtn:hover { border-color:var(--border-h); color:var(--white); }
+
+  @media(max-width:600px) { nav{padding:16px 20px;} .chat{padding:0 16px;} .setup{padding:40px 20px;} .dim6{grid-template-columns:repeat(2,1fr);} .cta-b{flex-direction:column;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="lf"><span>LR</span></div>
+    <div class="lt"><div class="ln">Laroche Lab</div><div class="ls">AI Operations</div></div>
+  </a>
+  <div class="nav-r">
+    <a href="index.html" class="back">← Back to site</a>
+    <div class="status"><div class="dot" id="dot"></div><span id="stxt">Ready</span></div>
+  </div>
+</nav>
+
+<div class="setup" id="setup">
+  <div class="stag">AI Operations Agent</div>
+  <h1>Assess Your AI<br>Operations Maturity</h1>
+  <p>A conversational assessment across 6 dimensions. Answer honestly — the agent scores your organization and delivers a structured maturity report with prioritized recommendations.</p>
+
+  <div class="aiwrap">
+    <label class="alabel" for="apiKey">Anthropic API Key</label>
+    <input type="password" class="ainput" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+    <div class="anote">
+      Free to get · <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key.<br>
+      Your key is never stored — it lives only in this browser session.
+    </div>
+  </div>
+
+  <button class="sbtn" onclick="startLive()">Start Assessment →</button>
+  <div class="dlink" onclick="startDemo()">No API key yet? Run a demo with sample answers →</div>
+</div>
+
+<div class="chat" id="chat">
+  <div class="pbar">
+    <span class="plabel">Assessment progress</span>
+    <div class="ptrack"><div class="pfill" id="pfill"></div></div>
+    <span class="ppct" id="ppct">0%</span>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  <div class="iarea">
+    <div class="irow">
+      <textarea class="cinput" id="cin" placeholder="Type your answer here..." rows="1"
+        onkeydown="hkey(event)" oninput="arz(this)"></textarea>
+      <button class="csend" id="csend" onclick="send()">→</button>
+    </div>
+    <div class="ihint">Enter to send · Shift+Enter for new line</div>
+  </div>
+</div>
+
+<script>
+const DIMS = [
+  { id:'workflow', name:'Workflow Documentation', q:'Let\'s start with how your AI processes are documented.\n\nAre your AI workflows — prompts, agent logic, human review steps — written down and accessible to your team? Or do they mostly live in people\'s heads?' },
+  { id:'prompts',  name:'Prompt Governance',       q:'Now let\'s talk about your prompts.\n\nHow are your prompts managed? Are they stored centrally, versioned, and owned by someone — or written ad-hoc and scattered across tools?' },
+  { id:'oversight',name:'Human Oversight',         q:'Third dimension: human oversight.\n\nDo you have defined checkpoints where a human reviews AI outputs before they reach customers or decisions? Is there a clear escalation path when something looks wrong?' },
+  { id:'monitor',  name:'Output Monitoring',       q:'Next: monitoring.\n\nIs AI output quality tracked over time? Do you have dashboards or scoring — or do you typically find out something went wrong when a customer tells you?' },
+  { id:'data',     name:'Data & Knowledge Quality',q:'Fifth dimension: the knowledge your AI relies on.\n\nIs your knowledge base accurate, curated, and maintained? Or has it grown organically and hasn\'t been reviewed in a while?' },
+  { id:'compliance',name:'Compliance Readiness',   q:'Last dimension: compliance.\n\nHave you assessed your AI systems against the EU AI Act? Do you know whether your use case is high-risk and what obligations come with that?' }
+];
+
+const SYS = `You are the Laroche Lab AI Operations Assessment Agent — a professional, direct conversational AI built on the Laroche Lab™ operational standards developed by Guy-Henry Laroche, former Amazon AI Operations Lead.
+
+Conduct a structured 6-dimension maturity assessment. Dimensions: Workflow Documentation, Prompt Governance, Human Oversight, Output Monitoring, Data & Knowledge Quality, Compliance Readiness.
+
+After each user answer:
+1. Acknowledge what you heard in 1-2 sentences
+2. Either ask one follow-up question OR score and move on
+3. Score each dimension 1-5: 1=nothing/reactive, 2=informal/ad-hoc, 3=partial/inconsistent, 4=defined/mostly followed, 5=systematic/documented/monitored
+
+Be direct and honest. Don't inflate scores.
+
+After all 6 dimensions, deliver:
+- Total score and maturity level (Foundation 6-12 / Developing 13-20 / Scaling 21-26 / Advanced 27-30)
+- Top 2 critical risks
+- 3 prioritized recommendations in urgency order
+- 3-sentence executive summary
+- CTA to book a Laroche Lab AI Operations Audit
+
+Tone: Professional, warm, direct — like a trusted advisor who tells you the truth.
+Length: 3-5 sentences per turn during assessment. Longer for final report only.
+
+When scoring a dimension include at end: [SCORE:dimension_id:score]
+Examples: [SCORE:workflow:3] [SCORE:compliance:1]
+
+When report is complete include: [REPORT_COMPLETE:total_score]`;
+
+let apiKey='', msgs=[], scores={}, dimIdx=0, isDemo=false, done=false, demoStep=0;
+
+const DEMO = [
+  `I can see you have some documentation but it's scattered and not systematically maintained — the classic starting point. The risk is key-person dependency.\n\n[SCORE:workflow:2]\n\n**Dimension 2 of 6: Prompt Governance**\n\nHow are your prompts managed? Stored centrally with ownership, or written ad-hoc by whoever needs them?`,
+  `Ad-hoc prompt creation is one of the most common and costly patterns I see. No versioning means no ability to audit when outputs degrade.\n\n[SCORE:prompts:1]\n\n**Dimension 3 of 6: Human Oversight**\n\nDo you have defined checkpoints where a human reviews AI outputs before they reach customers?`,
+  `Spot-checking is a reasonable starting point, but without defined triggers for when review is required, you're relying on intuition rather than a system.\n\n[SCORE:oversight:3]\n\n**Dimension 4 of 6: Output Monitoring**\n\nIs AI output quality tracked over time — dashboards, scoring — or do you typically discover problems when customers report them?`,
+  `Reactive monitoring means your users are effectively your QA team. That's a significant operational risk at any scale.\n\n[SCORE:monitor:2]\n\n**Dimension 5 of 6: Data & Knowledge Quality**\n\nIs the knowledge base your AI relies on accurate, curated, and regularly maintained?`,
+  `Regular updates are better than most — many organizations haven't touched their knowledge base since deployment. The gap is the absence of an accuracy verification process.\n\n[SCORE:data:3]\n\n**Dimension 6 of 6: Compliance Readiness**\n\nHave you assessed your AI systems against the EU AI Act? Do you know your risk classification?`,
+  `Awareness without action is where most organizations are right now. The EU AI Act obligations are in force and the window for proactive preparation is narrowing.\n\n[SCORE:compliance:1]\n\nThank you — here is your full maturity report.\n\n**Executive Summary**\nYour organization has deployed AI operationally but without the structural foundation to sustain it safely. The combination of undocumented workflows, uncontrolled prompts, and absent compliance posture creates compounding risk that will manifest as customer-facing failures or regulatory exposure within 12 months if unaddressed.\n\n**Top 2 Critical Risks**\n1. Prompt anarchy — no central library or versioning means output quality is person-dependent and unauditable\n2. Compliance exposure — operating without an EU AI Act risk assessment is an active liability today\n\n**3 Prioritized Recommendations**\n1. **This week:** Create a central prompt repository. Assign one owner. Document all active prompts with purpose and last-modified date.\n2. **This month:** Define 3 mandatory human review triggers — conditions under which AI output must be checked before delivery.\n3. **This quarter:** Commission a formal EU AI Act risk classification assessment.\n\n[REPORT_COMPLETE:12]`
+];
+
+function sc(n){ return n>=4?'hi':n===3?'mi':'lo'; }
+function sf(n){ return n>=4?'fhi':n===3?'fmi':'flo'; }
+function lbl(n){ return ['','Immediate action required','Significant gaps','Foundation — needs strengthening','Solid — refine further','Best practice'][n]||''; }
+
+function startLive(){
+  const k=document.getElementById('apiKey').value.trim();
+  if(!k||!k.startsWith('sk-ant')){ alert('Please enter a valid Anthropic API key (starts with sk-ant-)'); return; }
+  apiKey=k; isDemo=false; launch();
+}
+function startDemo(){ isDemo=true; apiKey=''; launch(); }
+
+function launch(){
+  document.getElementById('setup').style.display='none';
+  const c=document.getElementById('chat');
+  c.style.display='flex'; c.style.flexDirection='column';
+  if(!isDemo){ document.getElementById('dot').classList.add('on'); document.getElementById('stxt').textContent='Live'; }
+  else { document.getElementById('stxt').textContent='Demo'; }
+  msgs=[]; scores={}; dimIdx=0; done=false; demoStep=0;
+  uprog();
+  agentMsg(`Welcome. I'm the Laroche Lab AI Operations Assessment Agent.\n\nThis assessment covers **6 dimensions** of AI operational maturity. Answer as honestly as you can — there are no wrong answers, only accurate ones.\n\nLet's begin.`, ()=>setTimeout(()=>askDim(0),600));
+}
+
+function askDim(i){
+  if(i>=DIMS.length){ return; }
+  const d=DIMS[i];
+  const pre = i===0 ? '' : `**Dimension ${i+1} of 6: ${d.name}**\n\n`;
+  agentMsg(pre+d.q);
+}
+
+function uprog(){
+  const p=Math.round((Object.keys(scores).length/6)*100);
+  document.getElementById('pfill').style.width=p+'%';
+  document.getElementById('ppct').textContent=p+'%';
+}
+
+function agentMsg(text, cb){
+  const c=document.getElementById('msgs');
+  const t=document.createElement('div');
+  t.className='msg';
+  t.innerHTML=`<div class="av ag">LL</div><div class="mc"><div class="ms">Laroche Lab Agent</div><div class="typing"><span></span><span></span><span></span></div></div>`;
+  c.appendChild(t); scrollB();
+  setTimeout(()=>{ c.removeChild(t); renderAgent(text); if(cb)cb(); }, isDemo?600:900);
+}
+
+function renderAgent(text){
+  const c=document.getElementById('msgs');
+  const sm=text.match(/\[SCORE:(\w+):(\d)\]/);
+  const rm=text.match(/\[REPORT_COMPLETE:(\d+)\]/);
+  let clean=text.replace(/\[SCORE:\w+:\d\]/g,'').replace(/\[REPORT_COMPLETE:\d+\]/g,'').trim();
+  clean=clean.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  const el=document.createElement('div');
+  el.className='msg';
+  el.innerHTML=`<div class="av ag">LL</div><div class="mc"><div class="ms">Laroche Lab Agent</div><div class="mt">${clean}</div></div>`;
+  c.appendChild(el);
+  if(sm){
+    const id=sm[1], sc=parseInt(sm[2]);
+    scores[id]=sc; dimIdx++; uprog();
+    const mc=el.querySelector('.mc');
+    const card=document.createElement('div');
+    card.className='scard';
+    const dim=DIMS.find(d=>d.id===id);
+    card.innerHTML=`<div class="scard-t">Score recorded — ${dim?dim.name:id}</div>
+      <div class="srow">
+        <span class="sdim">${dim?dim.name:id}</span>
+        <div class="sbar"><div class="sbf ${sf(sc)}" style="width:${sc*20}%"></div></div>
+        <span class="sval ${sc>=4?'hi':sc===3?'mi':'lo'}">${sc}/5</span>
+      </div>
+      <div style="margin-top:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:${sc>=4?'#639922':sc===3?'#ba7517':'var(--red)'};">${lbl(sc)}</div>`;
+    mc.appendChild(card);
+  }
+  if(rm){
+    done=true;
+    document.getElementById('cin').disabled=true;
+    document.getElementById('csend').disabled=true;
+    renderReport(c);
+  }
+  scrollB();
+}
+
+function renderReport(c){
+  const total=Object.values(scores).reduce((a,b)=>a+b,0);
+  const lvl=total<=12?'🔴 Foundation':total<=20?'🟡 Developing':total<=26?'🟢 Scaling':'🏆 Advanced';
+  const rep=document.createElement('div');
+  rep.className='rep';
+  rep.innerHTML=`
+    <div class="rep-t">Your Maturity Report</div>
+    <div class="rep-s">Laroche Lab™ AI Operations Assessment</div>
+    <div class="dim6">
+      ${DIMS.map(d=>{
+        const s=scores[d.id]||0;
+        return `<div class="dc">
+          <div class="dc-n">${d.name}</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="sbar" style="flex:1;"><div class="sbf ${sf(s)}" style="width:${s*20}%"></div></div>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;" class="${sc(s)}">${s}/5</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="totrow">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);letter-spacing:.15em;text-transform:uppercase;">Total Score</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;">${total}/30</div>
+      <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--red);letter-spacing:.05em;">${lvl}</div>
+    </div>
+    <div class="cta-b">
+      <p>Ready to go deeper? A full Laroche Lab AI Operations Audit maps your actual workflows, scores risk at the system level, and delivers a structured roadmap your team can execute.</p>
+      <a href="mailto:guyhlaroche@gmail.com" class="cta-a">Book a Discovery Call →</a>
+    </div>
+    <button class="rbtn" onclick="restart()">Run another assessment ↺</button>`;
+  c.appendChild(rep); scrollB();
+}
+
+function userMsg(text){
+  const c=document.getElementById('msgs');
+  const el=document.createElement('div');
+  el.className='msg us';
+  el.innerHTML=`<div class="av us">You</div><div class="mc"><div class="ms">You</div><div class="mt">${text.replace(/\n/g,'<br>')}</div></div>`;
+  c.appendChild(el); scrollB();
+}
+
+async function send(){
+  const inp=document.getElementById('cin');
+  const text=inp.value.trim();
+  if(!text||done) return;
+  inp.value=''; inp.style.height='auto';
+  userMsg(text);
+  document.getElementById('csend').disabled=true;
+
+  if(isDemo){ handleDemo(); document.getElementById('csend').disabled=false; return; }
+
+  msgs.push({role:'user',content:text});
+  const ctx=dimIdx<DIMS.length
+    ? `[Context: Assessing dimension ${dimIdx+1}: ${DIMS[dimIdx].name}. Scored: ${Object.keys(scores).length}/6]`
+    : '[Context: All 6 dimensions done. Generate final report now.]';
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS+'\n\n'+ctx,messages:msgs})
+    });
+    if(!res.ok){ const e=await res.json(); throw new Error(e.error?.message||'API error'); }
+    const data=await res.json();
+    const reply=data.content[0].text;
+    msgs.push({role:'assistant',content:reply});
+    const sm=reply.match(/\[SCORE:\w+:\d\]/);
+    if(sm && dimIdx<DIMS.length){
+      setTimeout(()=>{ if(dimIdx<DIMS.length) askDim(dimIdx); },1200);
+    }
+    renderAgent(reply);
+  } catch(e){
+    agentMsg(`I encountered an issue: ${e.message}. Please check your API key and try again.`);
+  }
+  document.getElementById('csend').disabled=false;
+}
+
+function handleDemo(){
+  if(demoStep<DEMO.length){
+    const r=DEMO[demoStep];
+    const sm=r.match(/\[SCORE:(\w+):(\d)\]/);
+    if(sm){ scores[sm[1]]=parseInt(sm[2]); dimIdx++; uprog(); }
+    agentMsg(r); demoStep++;
+  }
+  document.getElementById('csend').disabled=false;
+}
+
+function hkey(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); } }
+function arz(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+function scrollB(){ const m=document.getElementById('msgs'); setTimeout(()=>m.scrollTop=m.scrollHeight,50); }
+function restart(){
+  msgs=[]; scores={}; dimIdx=0; done=false; demoStep=0;
+  document.getElementById('msgs').innerHTML='';
+  document.getElementById('cin').disabled=false;
+  document.getElementById('csend').disabled=false;
+  uprog();
+  agentMsg(`Welcome back. Let's run another assessment.\n\nAnswer each dimension honestly — the report is only as useful as the accuracy of your answers.\n\nLet's begin.`,()=>setTimeout(()=>askDim(0),600));
+}
+</script>
+</body>
+</html>
