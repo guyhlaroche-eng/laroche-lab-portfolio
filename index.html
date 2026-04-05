@@ -79,10 +79,12 @@
   footer { padding: 60px 4vw; display: flex; justify-content: space-between; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--mid); }
   
   /* MOBILE ADAPTATION */
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   @media (max-width: 900px) {
     .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 40px; }
     .hero h1 { font-size: 6rem; }
     .hero-meta { flex-direction: column; align-items: flex-start; gap: 40px; }
+    #pricing .grid-4 { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -92,6 +94,7 @@
   <div class="logo">LAROCHE LAB</div>
   <div class="nav-links">
     <a href="#lab">AI Lab</a>
+    <a href="#pricing">Pricing</a>
     <a href="#services">Services</a>
     <a href="#about">About</a>
     <a href="https://linkedin.com/in/guy-henry-laroche-0b3335168" target="_blank">LinkedIn</a>
@@ -144,6 +147,94 @@
         <a href="maturity.html" class="btn-tool">Run Maturity Assessment</a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- PRICING SECTION -->
+<section id="pricing">
+  <div class="container">
+    <div class="mono" style="margin-bottom: 20px;">Phase 1 Offers — April 2026</div>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; flex-wrap: wrap; gap: 20px;">
+      <h2 style="font-size: clamp(3rem, 6vw, 5rem);">Choose Your<br>Path Forward</h2>
+      <div style="max-width: 380px; text-align: right;">
+        <p style="color: var(--mid); font-size: 0.95rem; line-height: 1.7;">Fully async delivery via email — no calls, no meetings required. Clear, professional written documents you can review at your own pace.</p>
+      </div>
+    </div>
+
+    <!-- URGENCY BANNER -->
+    <div style="border: 1px solid rgba(200,40,26,0.5); background: rgba(200,40,26,0.07); padding: 14px 24px; margin-bottom: 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--red); display: inline-block; animation: pulse 2s infinite;"></span>
+        <span style="font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red);">EU AI Act — August 2026 Deadline</span>
+      </div>
+      <span style="font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--mid); letter-spacing: 0.08em;">Book before May 31 → receive one free additional written review (€597 value)</span>
+    </div>
+
+    <!-- PRICING CARDS -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--border);">
+
+      <!-- TIER 1 -->
+      <div style="padding: 36px 28px; border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; position: relative; transition: background 0.3s;" onmouseover="this.style.background='rgba(245,244,240,0.03)'" onmouseout="this.style.background='transparent'">
+        <div>
+          <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px;">Entry</div>
+          <div style="font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; margin-bottom: 12px;">AI Maturity<br>Snapshot</div>
+          <div style="font-size: 2rem; font-family: 'Bebas Neue', sans-serif; color: var(--red); margin-bottom: 8px;">Free → €149</div>
+          <p style="font-size: 0.85rem; color: var(--mid); line-height: 1.7; margin-bottom: 16px;">Full executive summary, detailed score breakdown, top risks, 3 prioritized recommendations + 30-day email support.</p>
+          <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--mid); letter-spacing: 0.1em;">Best for: Founders & COOs wanting quick clarity</div>
+        </div>
+        <a href="maturity.html" style="display: block; text-align: center; padding: 12px; background: transparent; color: var(--white); border: 1px solid var(--border); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.2s;" onmouseover="this.style.background='rgba(245,244,240,0.06)';this.style.borderColor='rgba(245,244,240,0.3)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(245,244,240,0.12)'">Start Free Assessment →</a>
+      </div>
+
+      <!-- TIER 2 -->
+      <div style="padding: 36px 28px; border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; position: relative; transition: background 0.3s;" onmouseover="this.style.background='rgba(245,244,240,0.03)'" onmouseout="this.style.background='transparent'">
+        <div>
+          <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px;">Session</div>
+          <div style="font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; margin-bottom: 12px;">AI Audit<br>Session</div>
+          <div style="font-size: 2rem; font-family: 'Bebas Neue', sans-serif; color: var(--red); margin-bottom: 8px;">€597</div>
+          <p style="font-size: 0.85rem; color: var(--mid); line-height: 1.7; margin-bottom: 16px;">Amazon-grade 4-dimension scoring, systemic risk analysis, and detailed remediation playbook. Delivered in 48 hours.</p>
+          <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--mid); letter-spacing: 0.1em;">Best for: Teams running AI in production</div>
+        </div>
+        <a href="mailto:guyhlaroche@gmail.com?subject=AI Audit Session — €597&body=Hi Guy-Henry, I'd like to book an AI Audit Session." style="display: block; text-align: center; padding: 12px; background: transparent; color: var(--white); border: 1px solid var(--border); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.2s;" onmouseover="this.style.background='rgba(245,244,240,0.06)';this.style.borderColor='rgba(245,244,240,0.3)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(245,244,240,0.12)'">Book Audit Session →</a>
+      </div>
+
+      <!-- TIER 3 — FEATURED -->
+      <div style="padding: 36px 28px; border-right: 1px solid rgba(200,40,26,0.4); border-top: 2px solid var(--red); background: rgba(200,40,26,0.05); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; position: relative; margin-top: -1px; transition: background 0.3s;" onmouseover="this.style.background='rgba(200,40,26,0.09)'" onmouseout="this.style.background='rgba(200,40,26,0.05)'">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red);">Most Urgent</div>
+            <div style="background: var(--red); color: var(--white); font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; padding: 3px 8px; text-transform: uppercase;">Aug 2026</div>
+          </div>
+          <div style="font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; margin-bottom: 12px;">AI Governance<br>Starter Pack</div>
+          <div style="font-size: 2rem; font-family: 'Bebas Neue', sans-serif; color: var(--red); margin-bottom: 8px;">€3,900</div>
+          <p style="font-size: 0.85rem; color: var(--mid); line-height: 1.7; margin-bottom: 16px;">EU AI Act risk classification, documentation kit, human oversight protocol, compliance gap report + roadmap. 2-week delivery.</p>
+          <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--mid); letter-spacing: 0.1em;">Best for: Companies preparing for August 2026</div>
+        </div>
+        <a href="mailto:guyhlaroche@gmail.com?subject=AI Governance Starter Pack — €3,900&body=Hi Guy-Henry, I'd like to discuss the AI Governance Starter Pack." style="display: block; text-align: center; padding: 12px; background: var(--red); color: var(--white); border: 1px solid var(--red); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.2s;" onmouseover="this.style.background='#a31f14'" onmouseout="this.style.background='var(--red)'">Get Compliant Now →</a>
+      </div>
+
+      <!-- TIER 4 -->
+      <div style="padding: 36px 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; position: relative; transition: background 0.3s;" onmouseover="this.style.background='rgba(245,244,240,0.03)'" onmouseout="this.style.background='transparent'">
+        <div>
+          <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px;">High-Ticket</div>
+          <div style="font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; margin-bottom: 12px;">AI Implementation<br>Sprint</div>
+          <div style="font-size: 2rem; font-family: 'Bebas Neue', sans-serif; color: var(--red); margin-bottom: 8px;">€7,500–€15,000</div>
+          <p style="font-size: 0.85rem; color: var(--mid); line-height: 1.7; margin-bottom: 16px;">Complete workflow design + n8n build, built-in audit rails, training materials, full handover documentation. Proven with GoProjexa (99% accuracy, 30 days).</p>
+          <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--mid); letter-spacing: 0.1em;">Best for: Orgs ready to scale safely and fast</div>
+        </div>
+        <a href="mailto:guyhlaroche@gmail.com?subject=AI Implementation Sprint&body=Hi Guy-Henry, I'd like to discuss an AI Implementation Sprint." style="display: block; text-align: center; padding: 12px; background: transparent; color: var(--white); border: 1px solid var(--border); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.2s;" onmouseover="this.style.background='rgba(245,244,240,0.06)';this.style.borderColor='rgba(245,244,240,0.3)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(245,244,240,0.12)'">Discuss Your Sprint →</a>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <div style="margin-top: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding: 28px 32px; border: 1px solid var(--border);">
+      <div>
+        <div style="font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--mid); letter-spacing: 0.1em; margin-bottom: 6px; text-transform: uppercase;">Next step</div>
+        <p style="font-size: 1rem; color: var(--white);">Email <a href="mailto:guyhlaroche@gmail.com" style="color: var(--red); text-decoration: none;">guyhlaroche@gmail.com</a> with the offer you want. Reply within 24 hours with payment details and next steps.</p>
+      </div>
+      <a href="mailto:guyhlaroche@gmail.com?subject=Laroche Lab — I'm ready to start" style="padding: 14px 32px; background: var(--white); color: var(--black); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap; transition: background 0.2s;" onmouseover="this.style.background='var(--red)';this.style.color='var(--white)'" onmouseout="this.style.background='var(--white)';this.style.color='var(--black)'">Start Now →</a>
+    </div>
+
   </div>
 </section>
 
