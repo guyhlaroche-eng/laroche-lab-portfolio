@@ -253,8 +253,92 @@ nav {
 .rec-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--red); min-width: 24px; }
 .rec-text { font-size: 14px; color: var(--mid); line-height: 1.6; flex: 1; }
 
-/* FOOTER */
-footer {
+/* EMAIL GATE MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(8,8,8,0.92);
+  backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #111111;
+  border: 1px solid rgba(245,244,240,0.15);
+  max-width: 520px; width: 100%;
+  padding: 48px;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.modal-tag {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.25em; color: var(--red); text-transform: uppercase;
+  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.modal-tag::before { content: ''; width: 20px; height: 1px; background: var(--red); }
+.modal-box h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem; letter-spacing: 0.03em; line-height: 0.95;
+  margin-bottom: 12px;
+}
+.modal-box p {
+  font-size: 14px; color: var(--mid); line-height: 1.7; margin-bottom: 28px;
+}
+.modal-score-preview {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 16px; border: 1px solid var(--border);
+  margin-bottom: 28px; background: rgba(200,40,26,0.06);
+}
+.modal-score-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 3rem;
+  color: var(--red); line-height: 1; flex-shrink: 0;
+}
+.modal-score-info { font-size: 13px; color: var(--mid); line-height: 1.5; }
+.modal-score-info strong { color: var(--white); font-weight: 400; display: block; margin-bottom: 2px; }
+.gate-form { display: flex; flex-direction: column; gap: 12px; }
+.gate-input {
+  background: rgba(245,244,240,0.04);
+  border: 1px solid var(--border);
+  color: var(--white); padding: 13px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  font-weight: 300; outline: none; border-radius: 0;
+  transition: border-color 0.2s; width: 100%;
+}
+.gate-input:focus { border-color: var(--border-hover); }
+.gate-input::placeholder { color: var(--mid); }
+.gate-submit {
+  background: var(--red); color: var(--white); border: none;
+  padding: 15px; font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s; width: 100%;
+}
+.gate-submit:hover { background: #a31f14; }
+.gate-submit:disabled { background: var(--grey); color: var(--mid); cursor: not-allowed; }
+.gate-disclaimer {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--mid); letter-spacing: 0.08em; text-align: center;
+  margin-top: 4px; line-height: 1.5;
+}
+.gate-skip {
+  display: block; text-align: center; margin-top: 12px;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--mid); cursor: pointer; letter-spacing: 0.1em;
+  text-transform: uppercase; transition: color 0.2s;
+  background: none; border: none; width: 100%;
+}
+.gate-skip:hover { color: var(--white); }
+.gate-success {
+  text-align: center; padding: 20px 0; display: none;
+}
+.gate-success h3 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 2rem;
+  margin-bottom: 8px; color: var(--white);
+}
+.gate-success p { font-size: 13px; color: var(--mid); line-height: 1.6; }
   padding: 32px 48px; border-top: 1px solid var(--border);
   display: flex; justify-content: space-between; align-items: center;
 }
@@ -455,7 +539,7 @@ footer p { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid)
         <div class="report-card-label">Go Deeper with Laroche Lab</div>
         <p>This self-assessment gives you directional clarity. A full Laroche Lab AI Operations Audit maps your actual workflows, scores risk at the system level, and delivers a structured roadmap your team can execute in 3–4 weeks.</p>
         <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
-          <a href="mailto:guyhlaroche@gmail.com" style="padding: 12px 24px; background: var(--red); color: var(--white); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;">Book a Discovery Call →</a>
+          <a href="/cdn-cgi/l/email-protection#b6d1c3cfdedad7c4d9d5ded3f6d1dbd7dfda98d5d9db89c5c3d4dcd3d5c28bf7ff96f1d9c0d3c4d8d7d8d5d396e5c2d7c4c2d3c496e6d7d5dd965436229654341a859a8f8686" style="padding: 12px 24px; background: var(--red); color: var(--white); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;">Book a Discovery Call →</a>
           <a href="agent.html" style="padding: 12px 24px; border: 1px solid var(--border); color: var(--mid); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(245,244,240,0.3)';this.style.color='#f5f4f0'" onmouseout="this.style.borderColor='rgba(245,244,240,0.12)';this.style.color='#9a9a8e'">Try the AI Agent →</a>
         </div>
       </div>
@@ -490,7 +574,7 @@ footer p { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid)
     <div class="cta-box">
       <div class="sidebar-label">Go Deeper</div>
       <p>Need the full picture? The Laroche Lab AI Operations Audit delivers a complete risk report and implementation roadmap.</p>
-      <a href="mailto:guyhlaroche@gmail.com" class="cta-link">Book Discovery Call →</a>
+      <a href="/cdn-cgi/l/email-protection#ff988a8697939e8d909c979abf98929e9693d19c9092c08c8a9d959a9c8bc2bb968c9c90899a8d86dfbc9e9393dfad9a8e8a9a8c8b" class="cta-link">Book Discovery Call →</a>
       <a href="agent.html" class="cta-link">Try the AI Agent →</a>
     </div>
 
@@ -498,7 +582,7 @@ footer p { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid)
       <div class="sidebar-label">Built by</div>
       <div style="font-size: 12px; color: var(--mid); line-height: 1.7;">
         Guy-Henry Laroche<br>Former Amazon AI Operations Lead<br>
-        <a href="mailto:guyhlaroche@gmail.com" style="color: var(--red); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em;">guyhlaroche@gmail.com →</a>
+        <a href="/cdn-cgi/l/email-protection#c4a3b1bdaca8a5b6aba7aca184a3a9a5ada8eaa7aba9" style="color: var(--red); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em;"><span class="__cf_email__" data-cfemail="0a6d7f7362666b786569626f4a6d676b636624696567">[email&#160;protected]</span> →</a>
       </div>
     </div>
   </div>
@@ -514,136 +598,195 @@ const scores = {};
 const dimNames = ['','Workflow Documentation','Prompt Governance','Human Oversight','Output Monitoring','Data & Knowledge Quality','Compliance Readiness'];
 
 function toggleDim(n) {
-  const body = document.getElementById('body-' + n);
-  const chev = document.getElementById('chev-' + n);
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  chev.classList.toggle('open', !isOpen);
+  const body = document.getElementById('body-'+n);
+  const chev = document.getElementById('chev-'+n);
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  chev.classList.toggle('open', !open);
 }
 
 function setScore(dim, val, el) {
   scores[dim] = val;
-  document.querySelectorAll(`[name="dim${dim}"]`).forEach(r => {
-    r.closest('.score-option').classList.remove('selected');
-  });
+  document.querySelectorAll('[name="dim'+dim+'"]').forEach(r => r.closest('.score-option').classList.remove('selected'));
   el.classList.add('selected');
 
-  const badge = document.getElementById('badge-' + dim);
-  badge.textContent = val + '/5';
-  badge.className = 'dim-score-badge ' + (val >= 4 ? 'scored-hi' : val === 3 ? 'scored-mid' : 'scored-lo');
+  const badge = document.getElementById('badge-'+dim);
+  badge.textContent = val+'/5';
+  badge.className = 'dim-score-badge '+(val>=4?'scored-hi':val===3?'scored-mid':'scored-lo');
 
-  const prog = document.getElementById('prog-' + dim);
-  const pscore = document.getElementById('pscore-' + dim);
-  prog.classList.add('done');
-  pscore.textContent = val + '/5';
+  document.getElementById('prog-'+dim).classList.add('done');
+  document.getElementById('pscore-'+dim).textContent = val+'/5';
 
   updateTotal();
 
-  // Auto-open next dimension
-  if (dim < 6 && !scores[dim + 1]) {
-    const nextBody = document.getElementById('body-' + (dim + 1));
-    const nextChev = document.getElementById('chev-' + (dim + 1));
-    if (!nextBody.classList.contains('open')) {
-      nextBody.classList.add('open');
-      nextChev.classList.add('open');
-    }
-    setTimeout(() => {
-      document.getElementById('card-' + (dim + 1)).scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 200);
+  if (dim < 6 && !scores[dim+1]) {
+    const nb = document.getElementById('body-'+(dim+1));
+    const nc = document.getElementById('chev-'+(dim+1));
+    if (!nb.classList.contains('open')) { nb.classList.add('open'); nc.classList.add('open'); }
+    setTimeout(() => document.getElementById('card-'+(dim+1)).scrollIntoView({behavior:'smooth',block:'center'}), 200);
   }
 }
 
 function updateTotal() {
   const vals = Object.values(scores);
-  const total = vals.reduce((a, b) => a + b, 0);
+  const total = vals.reduce((a,b)=>a+b,0);
   const count = vals.length;
+  document.getElementById('totalScore').innerHTML = total+'<span>/30</span>';
 
-  const totalEl = document.getElementById('totalScore');
-  totalEl.innerHTML = total + '<span>/30</span>';
+  let level, cls;
+  if (total<=12){level='🔴 Foundation';cls='';}
+  else if(total<=20){level='🟡 Developing';cls='amber';}
+  else if(total<=26){level='🟢 Scaling';cls='green';}
+  else{level='🏆 Advanced';cls='green';}
 
   const pill = document.getElementById('maturityPill');
-  let level, cls;
-  if (total <= 12) { level = '🔴 Foundation'; cls = ''; }
-  else if (total <= 20) { level = '🟡 Developing'; cls = 'amber'; }
-  else if (total <= 26) { level = '🟢 Scaling'; cls = 'green'; }
-  else { level = '🏆 Advanced'; cls = 'green'; }
-
   pill.textContent = level;
-  pill.className = 'maturity-pill' + (cls ? ' ' + cls : '');
+  pill.className = 'maturity-pill'+(cls?' '+cls:'');
 
   const btn = document.getElementById('generateBtn');
   btn.disabled = count < 6;
-  if (count === 6) btn.textContent = 'Generate Full Report →';
+  if (count===6) btn.textContent = 'Get My Full Report →';
 }
 
 function generateReport() {
-  const total = Object.values(scores).reduce((a, b) => a + b, 0);
-  let level, levelCls;
-  if (total <= 12) { level = 'Foundation'; levelCls = 'red'; }
-  else if (total <= 20) { level = 'Developing'; levelCls = 'amber'; }
-  else if (total <= 26) { level = 'Scaling'; levelCls = 'green'; }
-  else { level = 'Advanced'; levelCls = 'green'; }
+  const total = Object.values(scores).reduce((a,b)=>a+b,0);
+  let label;
+  if(total<=12) label='🔴 Foundation';
+  else if(total<=20) label='🟡 Developing';
+  else if(total<=26) label='🟢 Scaling';
+  else label='🏆 Advanced';
 
-  // Summary
+  document.getElementById('gateScore').textContent = total+'/30';
+  document.getElementById('gateLevel').textContent = label;
+  document.getElementById('emailGate').classList.add('open');
+}
+
+function submitGate() {
+  const name    = document.getElementById('gateName').value.trim();
+  const email   = document.getElementById('gateEmail').value.trim();
+  const company = document.getElementById('gateCompany').value.trim();
+
+  ['gateName','gateEmail','gateCompany'].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.borderColor = el.value.trim() ? '' : 'rgba(200,40,26,0.7)';
+  });
+  if (!name||!email||!company) return;
+
+  const total = Object.values(scores).reduce((a,b)=>a+b,0);
+  const subj  = encodeURIComponent('New Lead: '+name+' from '+company+' — Score '+total+'/30');
+  const lines = [
+    'New Laroche Lab Assessment Lead','',
+    'Name: '+name, 'Email: '+email, 'Company: '+company,
+    'Score: '+total+'/30', 'Timestamp: '+new Date().toISOString(),'','Scores:'
+  ].concat(Object.entries(scores).map(([k,v]) => dimNames[k]+': '+v+'/5'));
+  window.open('mailto:guyhlaroche@gmail.com?subject='+subj+'&body='+encodeURIComponent(lines.join('\n')),'_blank');
+
+  try {
+    const leads = JSON.parse(localStorage.getItem('ll_leads')||'[]');
+    leads.push({name,email,company,total,ts:new Date().toISOString()});
+    localStorage.setItem('ll_leads',JSON.stringify(leads));
+  } catch(e){}
+
+  document.getElementById('gateForm').style.display='none';
+  document.getElementById('gateSuccess').style.display='block';
+  setTimeout(() => { document.getElementById('emailGate').classList.remove('open'); renderReport(); }, 2200);
+}
+
+function skipGate() {
+  document.getElementById('emailGate').classList.remove('open');
+  renderReport();
+}
+
+function renderReport() {
+  const total = Object.values(scores).reduce((a,b)=>a+b,0);
+  let level;
+  if(total<=12) level='Foundation';
+  else if(total<=20) level='Developing';
+  else if(total<=26) level='Scaling';
+  else level='Advanced';
+
   const summaries = {
-    Foundation: 'Your organization has deployed AI before building the operational foundation to support it safely. The risks are manageable but urgent — most gaps can be closed with process and documentation, not technology. A focused 90-day operational sprint would significantly reduce both operational and regulatory risk.',
-    Developing: 'Your organization has some operational structure in place but critical gaps are creating compounding risk. The good news: you\'re close to a stable foundation. A targeted intervention across your weakest dimensions will unlock your ability to scale AI safely within 60–90 days.',
-    Scaling: 'Your AI operations are on solid ground. The focus now shifts from firefighting to optimization — tightening monitoring systems, formalizing governance, and ensuring full compliance alignment. You are well-positioned to scale AI across more of your organization.',
-    Advanced: 'Your operational discipline is a genuine competitive advantage. Few organizations reach this level of AI governance maturity. The focus is now continuous improvement, sharing your governance model externally, and ensuring it evolves with new AI capabilities and regulation.'
+    Foundation: 'Your organization has deployed AI before building the operational foundation to support it safely. The risks are manageable but urgent — most gaps can be closed with process and documentation, not technology. A focused 90-day sprint would significantly reduce both operational and regulatory risk.',
+    Developing: "Your organization has some operational structure in place but critical gaps are creating compounding risk. You're close to a stable foundation — a targeted intervention across your weakest dimensions will unlock your ability to scale AI safely within 60-90 days.",
+    Scaling: 'Your AI operations are on solid ground. The focus now shifts to optimization — tightening monitoring, formalizing governance, and ensuring full compliance alignment. You are well-positioned to scale AI across more of your organization.',
+    Advanced: 'Your operational discipline is a genuine competitive advantage. Few organizations reach this level of AI governance maturity. Focus on continuous improvement and sharing your governance model externally.'
   };
   document.getElementById('summaryText').textContent = summaries[level];
 
-  // Results table
   const table = document.getElementById('resultsTable');
   table.innerHTML = '<tr><th>Dimension</th><th>Score</th><th>Status</th></tr>';
-  for (let i = 1; i <= 6; i++) {
-    const s = scores[i];
-    const status = s >= 4 ? '✓ Strong' : s === 3 ? '△ Moderate' : '✗ Needs Work';
-    const color = s >= 4 ? '#c0dd97' : s === 3 ? '#fac775' : '#f7c1c1';
-    table.innerHTML += `<tr><td>${dimNames[i]}</td><td style="font-family:'DM Mono',monospace;color:var(--red)">${s}/5</td><td style="font-family:'DM Mono',monospace;font-size:12px;color:${color}">${status}</td></tr>`;
+  for (let i=1;i<=6;i++) {
+    const s=scores[i];
+    const st = s>=4?'✓ Strong':s===3?'△ Moderate':'✗ Needs Work';
+    const co = s>=4?'#c0dd97':s===3?'#fac775':'#f7c1c1';
+    table.innerHTML += '<tr><td>'+dimNames[i]+'</td><td style="font-family:\'DM Mono\',monospace;color:var(--red)">'+s+'/5</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;color:'+co+'">'+st+'</td></tr>';
   }
 
-  // Find lowest scores for risks
-  const sorted = Object.entries(scores).sort((a, b) => a[1] - b[1]);
-  const risksEl = document.getElementById('risksContent');
-  risksEl.innerHTML = '';
-  sorted.slice(0, 2).forEach(([dim, score]) => {
-    const riskTexts = {
-      1: 'Undocumented AI workflows create single points of failure. Any team member departing can collapse core AI-powered processes.',
-      2: 'Prompt anarchy means output quality depends entirely on who last touched the system. No consistency, no accountability, no way to debug failures.',
-      3: 'Absent human oversight means AI errors reach end users unchecked. This is the highest-risk state for customer trust and regulatory compliance.',
-      4: 'Without output monitoring, your AI system is a black box. Degradation and failures accumulate silently until they become visible — and costly.',
-      5: 'Poor knowledge quality means your AI is operating on bad data. Every output it produces inherits those errors at scale.',
-      6: 'Unaddressed compliance obligations under the EU AI Act represent active legal and reputational risk, particularly if your product influences financial or safety-critical decisions.'
-    };
-    const div = document.createElement('div');
-    div.className = 'rec-item';
-    div.innerHTML = `<span class="rec-num" style="color:#f7c1c1">✗</span><span class="rec-text">${riskTexts[dim]}</span>`;
-    risksEl.appendChild(div);
-  });
-
-  // Recommendations
-  const recsEl = document.getElementById('recsContent');
-  recsEl.innerHTML = '';
-  const recTexts = {
-    1: 'Create a central AI workflow document this week. Map the 3 most critical AI-powered processes end-to-end. Assign one owner to each.',
-    2: 'Create a prompt repository in Notion or GitHub. Document all active prompts with their purpose, last-modified date, and known limitations. Assign ownership.',
-    3: 'Define 3 human review triggers — the conditions under which an AI output must be checked before delivery. Start with high-stakes actions: account changes, financial decisions, escalations.',
-    4: 'Set up a weekly output quality review. Sample 20 AI responses. Score them. Track the trend. This alone will surface your biggest risk categories within 30 days.',
-    5: 'Audit your AI knowledge base. Identify all sources it relies on. Flag anything outdated or unverified. Assign a quarterly review schedule with a named owner.',
-    6: 'Conduct an EU AI Act risk classification assessment. Determine whether your product qualifies as high-risk. If it does, you need a compliance roadmap before your next funding round.'
+  const sorted = Object.entries(scores).sort((a,b)=>a[1]-b[1]);
+  const riskTexts = {
+    1:'Undocumented AI workflows create single points of failure. Any team member departing can collapse core AI-powered processes.',
+    2:'Prompt anarchy means output quality depends entirely on who last touched the system. No consistency, no accountability, no way to debug failures.',
+    3:'Absent human oversight means AI errors reach end users unchecked. This is the highest-risk state for customer trust and regulatory compliance.',
+    4:'Without output monitoring, your AI system is a black box. Degradation and failures accumulate silently until they become visible — and costly.',
+    5:'Poor knowledge quality means your AI is operating on bad data. Every output it produces inherits those errors at scale.',
+    6:'Unaddressed compliance obligations under the EU AI Act represent active legal and reputational risk, particularly if your product influences financial or safety-critical decisions.'
   };
-  sorted.slice(0, 3).forEach(([dim], i) => {
-    const div = document.createElement('div');
-    div.className = 'rec-item';
-    div.innerHTML = `<span class="rec-num">0${i+1}</span><span class="rec-text">${recTexts[dim]}</span>`;
-    recsEl.appendChild(div);
+  const risksEl = document.getElementById('risksContent');
+  risksEl.innerHTML='';
+  sorted.slice(0,2).forEach(([dim])=>{
+    const d=document.createElement('div'); d.className='rec-item';
+    d.innerHTML='<span class="rec-num" style="color:#f7c1c1">✗</span><span class="rec-text">'+riskTexts[dim]+'</span>';
+    risksEl.appendChild(d);
   });
 
-  const reportSection = document.getElementById('reportSection');
-  reportSection.classList.add('visible');
-  setTimeout(() => { reportSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  const recTexts = {
+    1:'Create a central AI workflow document this week. Map the 3 most critical AI-powered processes end-to-end. Assign one owner to each.',
+    2:'Create a prompt repository in Notion or GitHub. Document all active prompts with their purpose, last-modified date, and known limitations. Assign ownership.',
+    3:'Define 3 human review triggers — conditions under which an AI output must be checked before delivery. Start with high-stakes actions: account changes, financial decisions, escalations.',
+    4:'Set up a weekly output quality review. Sample 20 AI responses. Score them. Track the trend. This alone will surface your biggest risk categories within 30 days.',
+    5:'Audit your AI knowledge base. Identify all sources it relies on. Flag anything outdated or unverified. Assign a quarterly review schedule with a named owner.',
+    6:'Conduct an EU AI Act risk classification assessment. Determine whether your product qualifies as high-risk. If it does, you need a compliance roadmap before your next funding round.'
+  };
+  const recsEl = document.getElementById('recsContent');
+  recsEl.innerHTML='';
+  sorted.slice(0,3).forEach(([dim],i)=>{
+    const d=document.createElement('div'); d.className='rec-item';
+    d.innerHTML='<span class="rec-num">0'+(i+1)+'</span><span class="rec-text">'+recTexts[dim]+'</span>';
+    recsEl.appendChild(d);
+  });
+
+  document.getElementById('reportSection').classList.add('visible');
+  setTimeout(()=>document.getElementById('reportSection').scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
 </script>
+
+<!-- EMAIL GATE MODAL -->
+<div class="modal-overlay" id="emailGate">
+  <div class="modal-box">
+    <div class="modal-tag">Your report is ready</div>
+    <h2>Unlock Your Full<br>AI Operations Report</h2>
+    <p>Your assessment is complete. Enter your details to receive the full report — maturity level, top risks, and 3 prioritized recommendations.</p>
+    <div class="modal-score-preview">
+      <div class="modal-score-num" id="gateScore">—</div>
+      <div class="modal-score-info">
+        <strong id="gateLevel">Your maturity level</strong>
+        Score out of 30 across 6 operational dimensions. Your report shows exactly where to focus first.
+      </div>
+    </div>
+    <div class="gate-form" id="gateForm">
+      <input class="gate-input" id="gateName"    type="text"  placeholder="Your name" />
+      <input class="gate-input" id="gateEmail"   type="email" placeholder="Work email address" />
+      <input class="gate-input" id="gateCompany" type="text"  placeholder="Company name" />
+      <button class="gate-submit" onclick="submitGate()">Get My Full Report →</button>
+      <p class="gate-disclaimer">No spam. No sales calls. One personal follow-up from Guy-Henry within 24 hours.</p>
+      <button class="gate-skip" onclick="skipGate()">Skip — view report without submitting</button>
+    </div>
+    <div class="gate-success" id="gateSuccess">
+      <h3>Report Unlocked</h3>
+      <p>Thank you. Guy-Henry will follow up within 24 hours with additional insights tailored to your score.</p>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
